@@ -1,0 +1,54 @@
+<ion-side-menus enable-menu-with-back-views="false">
+  <ion-side-menu-content>
+    <ion-nav-bar align-title="center" class="bar-forbels">
+      <ion-nav-back-button></ion-nav-back-button>
+      <ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-navicon" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+    </ion-nav-bar>
+    <ion-nav-view name="menuContent"></ion-nav-view>
+    <!--
+    <ion-tabs>
+    <ion-nav-back-button>
+    </ion-nav-back-button>
+      <ion-tab title="Search" icon-off="ion-search" icon-on="ion-search" href="#/app/dashboard">
+        <ion-nav-view name="tab-search"></ion-nav-view>
+      </ion-tab>
+
+      <ion-tab title="Browse" icon-off="ion-ios-glasses" icon-on="ion-ios-glasses" href="#/app/attendence">
+        <ion-nav-view name="tab-browse"></ion-nav-view>
+      </ion-tab>
+
+      <ion-tab title="Playlist" icon-off="ion-ipod" icon-on="ion-ipod" href="#/app/playlists">
+        <ion-nav-view name="tab-playlists"></ion-nav-view>
+      </ion-tab>
+
+    </ion-tabs>
+  -->
+  </ion-side-menu-content>
+
+  <ion-side-menu side="left">
+    <ion-header-bar class="bar-stable">
+      <h1 class="title">Menu</h1>
+    </ion-header-bar>
+    <ion-content>
+      <ion-list>
+        <!--
+        <ion-item menu-close href="javascript:void(0)">
+          Search
+        </ion-item>
+        <ion-item menu-close href="#/app/dashboard">
+          Browse
+        </ion-item>
+        <ion-item menu-close href="javascript:void(0)">
+          Playlists
+        </ion-item>
+      -->
+        <ion-item menu-close ng-click="logout()">
+          Logout
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ion-side-menu>
+</ion-side-menus>

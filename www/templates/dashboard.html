@@ -1,0 +1,252 @@
+<ion-view view-title="Dashborad" cache-view="false">
+  <ion-nav-buttons side="right">
+    <button class="button button-icon button-clear ion-person-stalker" ng-click="studentSelect()" ng-if="childDetails.length > 1">
+    </button>
+  </ion-nav-buttons>
+  <ion-content style="background-color: #f0f5f5">
+    <div class="img-slider">
+      <ion-slide-box show-pager="false" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
+        <ion-slide>
+          <div>
+            <img src="img/image_slider1.jpg" alt="school">
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <img src="img/image_slider2.jpg" alt="our mission">
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <img src="img/image_slider3.jpg" alt="contact">
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <img src="img/image_slider4.jpg" alt="contact">
+          </div>
+        </ion-slide>
+        <ion-slide>
+          <div>
+            <img src="img/image_slider5.jpg" alt="contact">
+          </div>
+        </ion-slide>
+      </ion-slide-box>
+    </div>
+    <div ng-if="loginDetails.login_type == 'parent'">
+      <div class="row" style="text-align: center">
+          <div class="col col-33">
+            <a href="#/app/exams/{{currentStudentId}}">
+            <img src="img/results.png" width="60px" height="50px">
+            <p class="subdued">Results</p>
+          </a>
+          </div>
+        <div class="col col-33">
+          <a href="#/app/attendance/{{currentStudentId}}">
+            <img src="img/attendance.png" width="60px" height="50px">
+            <p class="subdued">Attendance</p>
+          </a>
+        </div>
+        <div class="col col-33">
+          <a href="#/app/notifications">
+            <img src="img/Announ.jpeg" width="60px" height="50px">
+            <p class="subdued">Announcement</p>
+          </a>
+        </div>
+      </div>
+      <div class="row" style="text-align: center">
+        <div class="col col-33">
+          <a href="#/app/chat/{{currentStudentId}}">
+            <img src="img/chat_with_teacher.png" width="60px" height="50px">
+            <p class="subdued">Online Teacher</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <a href="#/app/image-gallery">
+            <img src="img/image_gallery.png" width="60px" height="50px">
+            <p class="subdued">Image Gallery</p>
+          </a>
+        </div>
+        <div class="col col-33">
+          <a href="javascript:void(0)" onclick="window.open('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871', '_system', 'location=yes'); return false;">
+            <img src="img/facebook.png" width="60px" height="50px">
+            <p class="subdued">Facebook</p>
+          </a>
+        </div>
+      </div>
+      <!-- https://www.facebook.com/Frobels-Residential-High-School-1244461868958871  openFacebookPage()-->
+      <div class="row" style="text-align: center">
+        <!--
+        <div class="col col-33" href="javascript:void(0)">
+          <img src="img/whatsapp.png" width="60px" height="50px">
+          <p class="subdued">Whatsapp</p>
+        </div>
+      -->
+        <div class="col col-33" href="javascript:void(0)">
+          <a href="javascript:void(0)" onclick="window.open('https://www.youtube.com/watch?v=MCoOoxmdHDk', '_system', 'location=yes'); return false;">
+            <img src="img/youtube.png" width="60px" height="50px">
+            <p class="subdued">YouTube</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <p>&nbsp;</p>
+        </div>
+        <div class="col col-33">
+          <p>&nbsp;</p>
+        </div>
+      </div>
+    </div>
+    <div ng-if="loginDetails.login_type == 'teacher'">
+      <div class="row" style="text-align: center">
+
+        <div class="col col-33">
+          <a href="#/app/notifications">
+            <img src="img/Announ.jpeg" width="60px" height="50px">
+            <p class="subdued">Announcement</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <a href="javascript:void(0)" ng-click="textParent()">
+            <img src="img/chat_with_teacher.png" width="60px" height="50px">
+            <p class="subdued">Online Teacher</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <a href="#/app/image-gallery">
+            <img src="img/image_gallery.png" width="60px" height="50px">
+            <p class="subdued">Image Gallery</p>
+          </a>
+        </div>
+
+      </div>
+      <!-- https://www.facebook.com/Frobels-Residential-High-School-1244461868958871  openFacebookPage()-->
+      <div class="row" style="text-align: center">
+
+        <div class="col col-33">
+          <a href="javascript:void(0)" onclick="window.open('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871', '_system', 'location=yes'); return false;">
+            <img src="img/facebook.png" width="60px" height="50px">
+            <p class="subdued">Facebook</p>
+          </a>
+        </div>
+
+        <!--
+        <div class="col col-33" href="javascript:void(0)">
+          <img src="img/whatsapp.png" width="60px" height="50px">
+          <p class="subdued">Whatsapp</p>
+        </div>
+      -->
+
+      <div class="col col-33" href="javascript:void(0)">
+        <a href="javascript:void(0)" onclick="window.open('https://www.youtube.com/watch?v=MCoOoxmdHDk', '_system', 'location=yes'); return false;">
+          <img src="img/youtube.png" width="60px" height="50px">
+          <p class="subdued">YouTube</p>
+        </a>
+      </div>
+
+        <div class="col col-33">
+          <p>&nbsp;</p>
+        </div>
+
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
+
+<!--
+<div class="list-tabs">
+  <div class="school-tab-box">
+    <a href="#/app/attendance/{{currentStudentId}}">
+      <i class="fa fa-heart fa-3x"></i>
+      <p class="subdued">Attendence</p>
+    </a>
+  </div>
+
+  <div class="school-tab-box">
+    <a href="#/app/marks/{{currentStudentId}}">
+      <i class="fa fa-glide fa-3x"></i>
+      <p>Marks</p>
+    </a>
+  </div>
+</div>
+
+<div class="list-tabs">
+  <div class="school-tab-box">
+    <a href="">
+      <i class="fa fa-heart fa-3x"></i>
+      <p class="subdued">Live chat</p>
+    </a>
+  </div>
+  <div class="school-tab-box">
+    <a href="">
+      <i class="fa fa-glide fa-3x"></i>
+      <p>Notifications</p>
+    </a>
+  </div>
+</div>
+
+-->
+
+<!--
+<ion-content>
+
+  <div class="main-logo">
+    <img src="../img/LOGO.png" alt="Main logo">
+  </div>
+
+  <div class="img-slider">
+    <ion-slide-box show-pager="false" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
+      <ion-slide>
+        <div>
+          <img src="../img/ionic.png" alt="school">
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div>
+          <img src="../img/ourmission.jpeg" alt="our mission">
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div>
+          <img src="../img/contact.jpeg" alt="contact">
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </div>
+
+<div style="background-color: #444">
+  <div class="row">
+    <div class="col col-50 school-tab-box">
+      <a href="#/app/attendance/{{currentStudentId}}">
+        <i class="fa fa-heart fa-3x"></i>
+        <p class="subdued">Attendence</p>
+      </a>
+    </div>
+    <div class="col col-50 school-tab-box">
+      <a href="#/app/marks/{{currentStudentId}}">
+        <i class="fa fa-glide fa-3x"></i>
+        <p>Marks</p>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-50 school-tab-box">
+      <a href="">
+        <i class="fa fa-heart fa-3x"></i>
+        <p class="subdued">Live chat</p>
+      </a>
+    </div>
+    <div class="col col-50 school-tab-box">
+      <a href="">
+        <i class="fa fa-bell fa-3x"></i>
+        <p class="subdued">Notifications</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+</ion-content>
+-->

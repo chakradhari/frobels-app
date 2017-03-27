@@ -1,0 +1,9 @@
+<ion-view view-title={{album.album_name}}>
+  <ion-content>
+    <div class="row" ng-repeat="album in albumRows">
+      <div class="col-25" ng-repeat="image in album">
+        <img ng-src="{{frobelsApi + image.pic_path}}" width="100%" height="100px">
+      </div>
+    </div>
+  </ion-content>
+</ion-view>
