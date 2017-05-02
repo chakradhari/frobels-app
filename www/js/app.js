@@ -177,6 +177,36 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
+  .state('app.viewprofile', {
+    url: '/viewprofile',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/viewprofile.html',
+        controller: 'ViewProfileController'
+      }
+    }
+  })
+
+  .state('app.parentAssignmentView', {
+    url: '/parentassignmentview/:studentId',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/parent-assignment-view.html',
+        controller: 'ParentAssignmentController'
+      }
+    }
+  })
+
+  .state('app.teacherAssignmentView', {
+    url: '/teacherassignmentview',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/teacher-assignment-view.html',
+        controller: 'TeacherAssignmentController'
+      }
+    }
+  })
+
   // $urlRouterProvider.otherwise('/app/message/1');
 
   $urlRouterProvider.otherwise(function($injector, $location) {

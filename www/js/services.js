@@ -38,6 +38,23 @@ angular.module('Forbels.services', [])
     return deferred.promise;
   }
 
+  this.changepassword = function(requestParams) {
+    var deferred = $q.defer();
+    $http({
+      method: 'POST',
+      url: FrobelsApi + '/webservices/changePassword.php',
+      params: requestParams
+    }).then(
+      function(response) {
+        deferred.resolve(response);
+      },
+      function(error) {
+        deferred.reject(error);
+      }
+    );
+    return deferred.promise;
+  }
+
   this.forgotPassword = function(requestParams) {
     var deferred = $q.defer();
     $http({
@@ -287,6 +304,107 @@ angular.module('Forbels.services', [])
       return deferred.promise;
     }
   }])
+
+  .service('ProfileService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
+    this.viewProfileForStudent = function(studentId) {
+      var deferred = $q.defer();
+      var requestParams = {
+        studentId: studentId
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getStudentProfile.php',
+        // www.frobelsedu.com/webservices/getStudentProfile.php
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    this.viewTeacherProfile = function(teacherId) {
+      var deferred = $q.defer();
+      var requestParams = {
+        teacherId: teacherId
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getTeacherProfile.php',
+        // www.frobelsedu.com/webservices/getTeacherProfile.php
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+  }])
+
+  .service('AssignmentService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
+    this.getAssignments = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getAssignments.php',
+        // http://www.frobelsedu.com/webservices/getAssignments.php
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    this.createAssignments = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/createAssignment.php',
+        // www.frobelsedu.com/webservices/createAssignment.php
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    this.getListOfClassesAndSubjcts = function() {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getAllClassesNSubjects.php'
+        // http://www.frobelsedu.com/webservices/getAllClassesNSubjects.php
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+  }])
+
   // www.frobelsedu.com/webservices/getNotifications.php
 
 // http://www.frobelsedu.com/webservices/getImageGallery.php

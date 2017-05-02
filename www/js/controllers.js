@@ -44,6 +44,10 @@ $scope.logout = function() {
   $state.go('login');
 };
 
+$scope.showProfile = function() {
+
+};
+
 /*
 
 else if(result.data.userdetails.login_type == 'parent') {
@@ -82,10 +86,14 @@ else if(result.data.userdetails.login_type == 'teacher') {
 
 })
 
-.controller('LoginController', ["$scope", "$state", "$ionicModal", "$cordovaToast", "$rootScope", "LoginService", function($scope, $state, $ionicModal, $cordovaToast, $rootScope, LoginService) {
+.controller('LoginController', ["$scope", "$state", "$ionicModal", "$cordovaToast", "$rootScope", "$filter", "LoginService", function($scope, $state, $ionicModal, $cordovaToast, $rootScope, $filter, LoginService) {
   $scope.loginData = {};
 
   $scope.forgotPasswordObj = {};
+
+  $scope.changeObj = {};
+
+
 
   $scope.doLogin = function() {
     console.log("Entered")
@@ -137,7 +145,6 @@ else if(result.data.userdetails.login_type == 'teacher') {
 
   $ionicModal.fromTemplateUrl('templates/popups/forgot.html', {
     scope: $scope,
-
   }).then(function(modal) {
     $scope.forgotModal = modal;
   })
@@ -145,13 +152,26 @@ else if(result.data.userdetails.login_type == 'teacher') {
   $scope.forgotPassword = function() {
     $scope.forgotModal.show();
   };
+
   // window.localStorage.getItem('login_type') == 'parent' // state.go('app.teacherinbox');
   $scope.submitForgotPassword = function(forgotObj) {
+    console.log(typeof forgotObj.dob);
+    console.log(forgotObj.dob);
     if(forgotObj.admission_no && forgotObj.dob && forgotObj.mobile_no) {
+      // forgotObj.dob = $filter('date')(new Date(forgotObj.dob), 'yyyy-MM-dd')
         LoginService.forgotPassword(forgotObj).then(
           function(response) {
             console.log(response);
             $scope.forgotModal.hide();
+            $scope.forgotPasswordObj = {};
+            $cordovaToast.showLongTop(response.data.response).then(
+              function(success) {
+
+              },
+              function(error) {
+
+              }
+            )
           },
           function(error) {
             console.log(response);
@@ -160,6 +180,50 @@ else if(result.data.userdetails.login_type == 'teacher') {
     }
     else {
       alert('Please fill all the details');
+    }
+  };
+
+  $ionicModal.fromTemplateUrl('templates/popups/reset.html', {
+    scope: $scope,
+  }).then(function(modal) {
+    $scope.changeModal = modal;
+  })
+
+  $scope.changePassword = function() {
+    $scope.changeModal.show();
+  };
+
+  $scope.changeCredentials = function(changeObj) {
+    if(changeObj.username && changeObj.old_pwd && changeObj.new_pwd) {
+      // forgotObj.dob = $filter('date')(new Date(forgotObj.dob), 'yyyy-MM-dd')
+        LoginService.changepassword(changeObj).then(
+          function(response) {
+            console.log(response);
+            $scope.changeModal.hide();
+            $scope.changeObj = {};
+            $cordovaToast.showShortTop(response.data.response).then(
+              function(success) {
+
+              },
+              function(error) {
+
+              }
+            )
+          },
+          function(error) {
+            console.log(response);
+          }
+        )
+    }
+    else {
+      $cordovaToast.showShortTop('Please fill all the details').then(
+        function(success) {
+
+        },
+        function(error) {
+
+        }
+      )
     }
   };
 
@@ -204,7 +268,6 @@ else if(result.data.userdetails.login_type == 'teacher') {
   $scope.textParent = function() {
     $state.go('app.teacherinbox', {teacherId: $scope.loginDetails.object_id});
   };
-
 
   $scope.openFacebookPage = function() {
     console.log("print something");
@@ -590,6 +653,42 @@ else if(result.data.userdetails.login_type == 'teacher') {
       return showDot;
       };
 }])
+
+.controller('ViewProfileController', ['$scope', 'ProfileService', function($scope, ProfileService) {
+
+}])
+
+.controller('ParentAssignmentController', ['$scope', '$stateParams', 'AssignmentService', function($scope, $stateParams, AssignmentService) {
+  $scope.studentId = $stateParams.studentId;
+  $scope.getAssigmentsForParent = function(studentId) {
+    var requestParams = {studentId : studentId};
+    AssignmentService.getAssignments(requestParams).then(
+      function(response) {
+        console.log(response);
+      },
+      function(error) {
+
+      }
+    )
+  };
+  $scope.getAssigmentsForParent($scope.studentId);
+}])
+
+.controller('TeacherAssignmentController', ['$scope', 'AssignmentService', function($scope, AssignmentService) {
+  $scope.getAssigmentsForTeacher = function(teacherId) {
+    var requestParams = {teacherId: teacherId}
+    AssignmentService.getAssignments(requestParams).then(
+      function(response) {
+
+      },
+      function(error) {
+
+      }
+    )
+  };
+}])
+
+
 /*
 ,
 "proxies": [
