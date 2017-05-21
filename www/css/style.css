@@ -188,3 +188,34 @@
 .check-box-right {
   text-align: right;
 }
+
+.contact-us-card {
+  padding: 10px;
+  text-align: center;
+  background: #ccccb3;
+  font-size: 17px;
+  font-style: italic;
+  padding-top: 43px;
+  font-family: cursive;
+}
+.contact-us-header {
+  font-weight: bold;
+  font-size: 35px;
+  text-transform: capitalize;
+  padding-bottom: 26px;
+}
+.contact-us-card span {
+  font-weight: bold;
+}
+
+.custom-badge {
+  position: relative;
+  left: 62px;
+  bottom: 41px;
+  padding: 1px solid #000;
+  border: 1px solid #000;
+  border-radius: 50%;
+  padding: 1px 6px 1px;
+  background: #ff471a;
+  color: white;
+}

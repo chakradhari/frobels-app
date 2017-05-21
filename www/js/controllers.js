@@ -2,45 +2,11 @@ angular.module('Forbels.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicModal, $ionicPopup, $timeout, $state, $ionicHistory, LoginService, ContactusService) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-
-  // Form data for the login modal
-
-/*
-// Create the login modal that we will use later
-$ionicModal.fromTemplateUrl('templates/login.html', {
-  scope: $scope
-}).then(function(modal) {
-  $scope.modal = modal;
-});
-
-$scope.$on('$stateChangeStart', function(event, toState, toParams) {
-    if(toState == 'app.marks') {
-      $scope.bodyClass = 'marks-view'
-    }
-});
-*/
-
 $scope.logout = function() {
-  // window.localStorage.setItem('oauth', '');
+
   window.localStorage.clear();
   $ionicHistory.clearCache();
 
-  /*
-  $cordovaToast.showShortTop("Logged out successfully").then(
-    function(success) {
-
-    },
-    function(error) {
-
-    }
-  )
-  */
   $state.go('login');
 };
 
@@ -57,40 +23,6 @@ $scope.showProfile = function() {
 
 };
 
-/*
-
-else if(result.data.userdetails.login_type == 'parent') {
-  console.log(result);
-  window.localStorage.setItem('oauth', result.data.userdetails.oauth);
-  $rootScope.loginDetails = result.data.userdetails;
-  window.localStorage.setItem('loginDetails', JSON.stringify(result.data.userdetails));
-  window.localStorage.setItem('login_type', result.data.userdetails.login_type);
-  $state.go('app.dashboard', { childDetails: result.data.userdetails.children_details});
-}
-else if(result.data.userdetails.login_type == 'teacher') {
-  console.log(result);
-  window.localStorage.setItem('oauth', result.data.userdetails.oauth);
-  $rootScope.loginDetails = result.data.userdetails;
-  window.localStorage.setItem('loginDetails', JSON.stringify(result.data.userdetails));
-  window.localStorage.setItem('login_type', result.data.userdetails.login_type);
-  console.log("Teacher Login");
-  $state.go('app.teacherinbox', {teacherId: result.data.userdetails.object_id});
-}
-*/
-
-
-
-/*
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
-*/
   // Perform the login action when the user submits the login form
 
 })
@@ -121,7 +53,9 @@ else if(result.data.userdetails.login_type == 'teacher') {
           $scope.loginData = {};
         }
         else {
-          console.log(result);
+          if(result.data.newMessages > 0) {
+            $rootScope.messageCount = result.data.newMessages;
+          }
           window.localStorage.setItem('oauth', result.data.userdetails.oauth);
           $rootScope.loginDetails = result.data.userdetails;
           window.localStorage.setItem('loginDetails', JSON.stringify(result.data.userdetails));
@@ -245,6 +179,10 @@ else if(result.data.userdetails.login_type == 'teacher') {
   console.log($state.params.childDetails);
   // $scope.childDetails = $state.params.childDetails;
 
+  if($rootScope.messageCount) {
+    $scope.messageCount = $rootScope.messageCount;
+  }
+
   if($state.params.childDetails) {
     window.localStorage.setItem('childDetails', JSON.stringify($state.params.childDetails));
     $scope.childDetails = JSON.parse(window.localStorage.getItem('childDetails'));
@@ -283,14 +221,10 @@ else if(result.data.userdetails.login_type == 'teacher') {
 
   $scope.openFacebookPage = function() {
     console.log("print something");
-    // window.open('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871', '_system');
-    // url.replace('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871');
-    // cordova.InAppBrowser.open('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871', '_blank');
     cordova.InAppBrowser.open('https://www.google.com', '_blank');
-    // window.open(ref);
   };
 
-
+  /*
   $scope.getImages = function() {
     dashBoradService.getImageGallery()
     .then(
@@ -303,6 +237,9 @@ else if(result.data.userdetails.login_type == 'teacher') {
     )
   };
   $scope.getImages();
+  */
+
+
 }])
 
 /* This for parent and to view child attendance */
@@ -916,7 +853,9 @@ else if(result.data.userdetails.login_type == 'teacher') {
     if(type === 'Insert') {
       AttendanceService.insertStudentAttendance(requestParams).then(
         function(response) {
-          console.log(response);
+          if(response) {
+            state.go('app.dashboard');
+          }
         },
         function(error) {
           console.log(error);
@@ -925,7 +864,9 @@ else if(result.data.userdetails.login_type == 'teacher') {
     } else {
       AttendanceService.updateStudentAttendance(requestParams).then(
         function(response) {
-          console.log(response)
+          if(response) {
+            state.go('app.dashboard');
+          }
         },
         function(error) {
           console.log(error);

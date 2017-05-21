@@ -31,6 +31,18 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     $ionicLoading.hide();
   })
 
+  /*
+    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
+      console.log(toState.name);
+      if($rootScope.messageCount) {
+        if($rootScope.messageCount > 0 && toState.name === 'app.notifications') {
+          $rootScope.messageCount = 0;
+        }
+      }
+    })
+  */
+
+
 })
 
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
