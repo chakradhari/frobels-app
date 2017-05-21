@@ -184,6 +184,10 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
         templateUrl: 'templates/viewprofile.html',
         controller: 'ViewProfileController'
       }
+    },
+    params: {
+      type: null,
+      personId: null
     }
   })
 
@@ -206,6 +210,49 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
       }
     }
   })
+
+  .state('app.teacherAttendanceView', {
+    url: '/teacherAttendanceView',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/teacher-attendance-view.html',
+        controller: 'TeacherAttendanceController'
+      }
+    }
+  })
+
+  .state('app.contactus', {
+    url: '/contactUs',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/contact-us.html',
+        controller: 'ContactUsController'
+      }
+    }
+  })
+
+  /*
+  .state('app.techercreateassignment', {
+    url: '/createassignment',
+    views: {
+      "assignmentmenucontent": {
+        templateUrl: 'templates/create-assignment.html',
+        controller: 'CreateAssignmentController'
+      }
+    }
+  })
+
+    .state('app.teacherviewassignments', {
+      url: '/viewassignments',
+      views: {
+        'assignmentmenucontent': {
+          templateUrl: 'templates/view-assignments.html',
+          controller: 'ViewAssignmentsForTeacherController'
+        }
+      }
+    })
+  })
+  */
 
   // $urlRouterProvider.otherwise('/app/message/1');
 

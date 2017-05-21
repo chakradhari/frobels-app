@@ -1,6 +1,6 @@
 angular.module('Forbels.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicModal, $ionicPopup, $timeout, $state, $ionicHistory, LoginService) {
+.controller('AppCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicModal, $ionicPopup, $timeout, $state, $ionicHistory, LoginService, ContactusService) {
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -44,7 +44,16 @@ $scope.logout = function() {
   $state.go('login');
 };
 
+$scope.contactus = function() {
+  $state.go('app.contactus')
+};
+
 $scope.showProfile = function() {
+  if(window.localStorage.getItem('login_type') == 'teacher') {
+    $state.go('app.viewprofile', { type: window.localStorage.getItem('login_type'), personId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id });
+  } else {
+    $state.go('app.viewprofile', { type: window.localStorage.getItem('login_type'), personId: window.localStorage.getItem('currentStudentId')});
+  }
 
 };
 
@@ -117,6 +126,7 @@ else if(result.data.userdetails.login_type == 'teacher') {
           $rootScope.loginDetails = result.data.userdetails;
           window.localStorage.setItem('loginDetails', JSON.stringify(result.data.userdetails));
           window.localStorage.setItem('login_type', result.data.userdetails.login_type);
+          window.localStorage.setItem('schoolId', result.data.schoolId);
           if(result.data.userdetails.login_type == 'parent') {
             $state.go('app.dashboard', { childDetails: result.data.userdetails.children_details});
           }
@@ -239,6 +249,7 @@ else if(result.data.userdetails.login_type == 'teacher') {
     window.localStorage.setItem('childDetails', JSON.stringify($state.params.childDetails));
     $scope.childDetails = JSON.parse(window.localStorage.getItem('childDetails'));
     $scope.currentStudentId = $scope.childDetails[0].student_id;
+    window.localStorage.setItem('currentStudentId', $scope.childDetails[0].student_id);
   }
 
   if(window.localStorage.getItem('childDetails')) {
@@ -261,6 +272,7 @@ else if(result.data.userdetails.login_type == 'teacher') {
   $scope.selectedChild = function(studentId) {
     console.log("called");
     $scope.currentStudentId = studentId;
+    window.localStorage.setItem('currentStudentId', $scope.childDetails[0].student_id);
     childSelect.close();
   }
   };
@@ -654,24 +666,91 @@ else if(result.data.userdetails.login_type == 'teacher') {
       };
 }])
 
-.controller('ViewProfileController', ['$scope', 'ProfileService', function($scope, ProfileService) {
+.controller('ViewProfileController', ['$scope', '$rootScope', '$state', 'ProfileService', function($scope, $rootScope, $state, ProfileService) {
+  console.log($rootScope.loginDetails);
+
+  if($state.params.type) {
+    $scope.type = $state.params.type;
+  }
+
+  if($state.params.personId) {
+    $scope.personId = $state.params.personId;
+  }
+
+  $scope.getTeacherProfile = function(teacherId) {
+    ProfileService.viewTeacherProfile(teacherId).then(
+      function(response) {
+        console.log(response);
+        $scope.data = response.data[0];
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+  $scope.getStudentProfile = function(studentId) {
+    ProfileService.viewProfileForStudent(studentId).then(
+      function(response) {
+        console.log(response);
+        $scope.data = response.data[0];
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+  if($scope.type) {
+      if($scope.type == 'teacher') {
+        $scope.getTeacherProfile($scope.personId);
+      } else {
+        $scope.getStudentProfile($scope.personId)
+      }
+  }
 
 }])
 
 .controller('ParentAssignmentController', ['$scope', '$stateParams', 'AssignmentService', function($scope, $stateParams, AssignmentService) {
   $scope.studentId = $stateParams.studentId;
+
+  /* View Assignments for parent child*/
   $scope.getAssigmentsForParent = function(studentId) {
     var requestParams = {studentId : studentId};
     AssignmentService.getAssignments(requestParams).then(
       function(response) {
         console.log(response);
+        $scope.assignments = response.data;
       },
       function(error) {
 
       }
     )
   };
-  $scope.getAssigmentsForParent($scope.studentId);
+
+  /* View Assignments for teacher */
+
+  $scope.getAssigmentsForTeacher = function(teacherId) {
+    var requestParams = {teacherId : teacherId};
+    AssignmentService.getAssignments(requestParams).then(
+      function(response) {
+        console.log(response);
+        $scope.assignments = response.data;
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+  $scope.assignmentFilter = {};
+
+  if(window.localStorage.getItem('login_type') == 'parent') {
+    $scope.getAssigmentsForParent($scope.studentId);
+  } else {
+    $scope.getAssigmentsForTeacher(JSON.parse(window.localStorage.getItem('loginDetails')).object_id);
+  }
+
 }])
 
 .controller('TeacherAssignmentController', ['$scope', 'AssignmentService', function($scope, AssignmentService) {
@@ -686,7 +765,195 @@ else if(result.data.userdetails.login_type == 'teacher') {
       }
     )
   };
+
+  $scope.createAssignment = function(selectedItem) {
+    console.log(selectedItem);
+    var requestParams = {
+      classId: selectedItem.class.class_id,
+      teacherId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
+      subjectId: selectedItem.subject.subject_id,
+      message: selectedItem.message
+    };
+
+    AssignmentService.createAssignments(requestParams).then(
+      function(response) {
+        console.log(response);
+        $scope.seletecItem = {};
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+
+  };
+
+  $scope.seletecItem = {};
+
+  $scope.getAllClassAndSubjects = function() {
+    AssignmentService.getListOfClassesAndSubjcts().then(
+      function(response) {
+        console.log(response);
+        $scope.classes = response.data.classes;
+        $scope.subjects = response.data.subjects
+      },
+      function(error) {
+
+      }
+    )
+  };
+
+  $scope.getAllClassAndSubjects();
 }])
+
+.controller('TeacherAttendanceController', ['$scope', 'AssignmentService', 'AttendanceService', function($scope, AssignmentService, AttendanceService) {
+  $scope.seletecdClass = {
+    value: '',
+    session: ''
+  };
+  $scope.showForms = {
+    classSelectForm : true,
+    studentsDisplayForm: false
+  };
+
+  $scope.attendiesList = [];
+  // $scope.attendiesList1 = [];
+
+  $scope.getListOfClassesAndSubjects = function() {
+    AssignmentService.getListOfClassesAndSubjcts().then(
+      function(response) {
+        $scope.classes = response.data.classes;
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  }
+
+  $scope.getListOfClassesAndSubjects();
+
+  $scope.fetchChildren = function(selectedClass) {
+
+    AttendanceService.getStudentsByClassId(selectedClass.value.class_id, selectedClass.session).then(
+      function(response) {
+        console.log(response);
+        if(response.data.students.length > 0) {
+          $scope.insertOrUpdateAttendance = response.data.attType
+          $scope.currentSession = selectedClass.session;
+          var attendiesList = response.data.students;
+          var iteratedvalue = 0;
+
+          attendiesList.forEach(function(value, key) {
+            iteratedvalue++;
+            $scope.attendiesList['attendie' + (key + 1)] = value.attendance;
+
+            if(iteratedvalue === attendiesList.length) {
+              console.log($scope.attendiesList);
+              $scope.students = response.data.students;
+              console.log($scope.students);
+            }
+
+          })
+
+          $scope.showForms.classSelectForm = false;
+          $scope.showForms.studentsDisplayForm = true;
+
+        }
+      },
+      function(error) {
+
+      }
+    )
+
+  };
+
+  $scope.showResults = function(list) {
+
+    var attendiesStatus = [];
+
+    for(var i=0; i<Object.keys(list).length; i++) {
+      var obj = {
+        status: list[Object.keys(list)[i]],
+        studentId: $scope.students[i].student_id
+      }
+      attendiesStatus.push(obj);
+    }
+
+    var students = attendiesStatus;
+    var absenties = '';
+    var presenties = '';
+    var lateComers = '';
+
+    for(var student in students) {
+      var studentId = students[student].studentId;
+      var status = students[student].status;
+
+      if(status == 'P') {
+        presenties += studentId + ':0,';
+      }
+      else if(status == 'A') {
+        absenties += studentId + ',';
+      }
+      else {
+        presenties += studentId + ':1,';
+      }
+    }
+
+    absenties = absenties.substring(0, absenties.length-1);
+    presenties = presenties.substring(0, presenties.length-1);
+
+    console.log(`Absenties : ${absenties}, Presenties : ${presenties}, session: ${$scope.currentSession}, teacherId: ${JSON.parse(window.localStorage.getItem('loginDetails')).object_id}`);
+    $scope.submitAttendance($scope.insertOrUpdateAttendance, absenties, presenties, $scope.currentSession, JSON.parse(window.localStorage.getItem('loginDetails')).object_id);
+  };
+
+  $scope.submitAttendance = function(type, a, p, s, t_id) {
+    var requestParams = {
+      date: new Date(),
+      absentees: a,
+      presentees: p,
+      session: s,
+      teacherId: t_id
+    }
+    if(type === 'Insert') {
+      AttendanceService.insertStudentAttendance(requestParams).then(
+        function(response) {
+          console.log(response);
+        },
+        function(error) {
+          console.log(error);
+        }
+      )
+    } else {
+      AttendanceService.updateStudentAttendance(requestParams).then(
+        function(response) {
+          console.log(response)
+        },
+        function(error) {
+          console.log(error);
+        }
+      )
+    }
+  };
+
+}])
+
+.controller('ContactUsController', ["$scope", "ContactusService", function($scope, ContactusService) {
+  var schoolId = window.localStorage.getItem('schoolId');
+  console.log(schoolId);
+  $scope.getSchoolContact = function() {
+    ContactusService.contactUs(schoolId).then(
+      function(response) {
+        $scope.schoolDetails = response.data.schoolDetails[0];
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+  $scope.getSchoolContact();
+
+}])
+
 
 
 /*

@@ -169,34 +169,22 @@
     border-radius: 50%;
     padding: 0px 6px 1px;
 }
-
-
-/* New Designs */
-
-
-/*
-
-.tabs-list {
-  position: absolute;
-  width: 100%;
-  padding-top: 10px;
-  background: #ffc180;
+.no-data-card {
+  text-align: center;
+  padding: 15px;
 }
 
-.list-tabs {
-  margin-top: 5px;
-  width: 100%;
-  height: 75px;
+.menu-bar-heading {
+  border: 1px solid;
+  padding: 5px;
+  text-align: center;
 }
 
-
-.list-tabs .school-tab-box {
-  display: inline-block;
-  width: 30%;
-  height: 100%;
-  padding: 2%;
-  margin-left: 2%;
+.small-font-name {
+  font-size: 12px;
+  margin-left: -14px;
 }
 
-color: bisque;
-*/
+.check-box-right {
+  text-align: right;
+}

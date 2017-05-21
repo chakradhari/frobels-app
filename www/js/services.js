@@ -2,6 +2,30 @@ angular.module('Forbels.services', [])
 // .constant('FrobelsApi', '')
 .constant('FrobelsApi', 'http://www.frobelsedu.com')
 
+.service('ContactusService', ['$q', '$http', 'FrobelsApi', function($q, $http, FrobelsApi) {
+  this.contactUs = function(schoolId) {
+    var requestParams = {
+      schoolId: schoolId
+    };
+
+    var deferred = $q.defer();
+    $http({
+      method: 'GET',
+      url: FrobelsApi + '/webservices/getContactDetails.php',
+      params: requestParams
+    }).then(
+      function(response) {
+        deferred.resolve(response);
+        console.log(response);
+      },
+      function(error) {
+        deferred.reject(error);
+      }
+    );
+    return deferred.promise;
+  }
+}])
+
 .service('LoginService', ['$q', '$http', '$httpParamSerializerJQLike', '$sce', 'FrobelsApi', function($q, $http, $httpParamSerializerJQLike, $sce, FrobelsApi) {
 
   this.login = function(requestParams) {
@@ -11,21 +35,10 @@ angular.module('Forbels.services', [])
     }
     console.log(dataObj);
     var deferred = $q.defer();
-    // var url  = `${FrobelsApi}/webservices/authUser.php?username=${requestParams.username}&password=${requestParams.password}`;
-    // console.log(url);
     $http({
       method: 'GET',
       url: FrobelsApi + '/webservices/authUser.php',
-      // ForbelsApi + '/webservices/authUser.php',
-      // contentType: 'application/json',
-      // headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      // url: 'http://www.frobelsedu.com/webservices/authUser.php',
-      // www.frobelsedu.com/webservices/authUser.php
-      // processData: false,
-      // dataType: 'json',
-      // data: dataObj
       params: requestParams
-      // paramSerializer: '$httpParamSerializerJQLike'
     }).then(
       function(response) {
         deferred.resolve(response);
@@ -106,6 +119,74 @@ angular.module('Forbels.services', [])
         method: 'GET',
         url: FrobelsApi + '/webservices/getStudentAttendance.php',
         params: reqParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+          console.log(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+
+      // $http.get('www.frobelsedu.com/webservices/getstudentmarks.php?studentId=1&categoryId=1')
+      // http://www.frobelsedu.com/webservices/getStudentAttendance.php
+    };
+
+    this.getStudentsByClassId = function(classId, session) {
+      var deferred = $q.defer();
+      var reqParams = {
+        classId: classId,
+        date: new Date(),
+        session: session
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getStudentsByClassId.php',
+        params: reqParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+          console.log(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+
+      // $http.get('www.frobelsedu.com/webservices/getstudentmarks.php?studentId=1&categoryId=1')
+      // http://www.frobelsedu.com/webservices/getStudentAttendance.php
+    };
+
+    this.insertStudentAttendance = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/insertStudentAttendance.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+          console.log(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+
+      // $http.get('www.frobelsedu.com/webservices/getstudentmarks.php?studentId=1&categoryId=1')
+      // http://www.frobelsedu.com/webservices/getStudentAttendance.php
+    };
+
+    this.updateStudentAttendance = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/updateStudentAttendance.php',
+        params: requestParams
       }).then(
         function(response) {
           deferred.resolve(response);

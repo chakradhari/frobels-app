@@ -8,9 +8,10 @@
           <p>
             <a href="javascript:void(0)" class="text-subdued-frobels">{{subject.subject_name}}</a>
           </p>
-          <div ng-show="showDetails" ng-click="textTeacher($index)">
+          <div ng-show="showDetails">
             <p>&nbsp;</p>
-            <a href="javascript:void(0)" class="text-subdued-frobels">{{subject.emp_name}}</a>
+            <a href="javascript:void(0)" ng-click="textTeacher($index)" class="text-subdued-frobels">{{subject.emp_name}}</a>
+            <i class="icon ion-person" style="position: absolute; right: 186px; top: 18px;" ui-sref="app.viewprofile({type: 'teacher', personId: {{subject.emp_id}}})"></i>
             <span class="unread-highlighter" ng-if="showUnread(subject.emp_id)">.</span>
           </div>
         <i class="icon icon-accessory" ng-class="{'ion-chevron-right' : !showDetails, 'ion-chevron-down': showDetails}"></i>
@@ -21,3 +22,5 @@
     </div>
   </ion-content>
 </ion-view>
+
+<!-- <a ui-sref="app.viewprofile({type: 'teacher', personId: {{subject.emp_id}}})">view profile</a> -->

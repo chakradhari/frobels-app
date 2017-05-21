@@ -1,11 +1,20 @@
 <ion-view view-title="Assignments" cache-view="false">
   <ion-content>
-    <div class="list">
-      <div class="item item-divider">
-        <input type="text" placeholder="Please filter list using any keyword">
+    <div class="padding" ng-show="assignments.length == 0">
+      <div class="card no-data-card">
+        No Assignments to show.
       </div>
-      <div class="item" ng-repeat="assigment in assignments">
-
+    </div>
+    <p>&nbsp;</p>
+    <div class="list padding" ng-show="assignments.length > 0">
+      <div class="item bar-stable item-input-inset">
+        <label class="item-input-wrapper">
+          <input type="text" style="width: 95%" ng-model="assignmentFilter.value" placeholder="Please filter list using any keyword">
+        </label>
+      </div>
+      <div class="item" ng-repeat="assignment in assignments | filter: assignmentFilter.value">
+        <p>{{assignment.message}}</p>
+        <p>Date: {{assignment.datetime}}</p>
       </div>
     </div>
   </ion-content>

@@ -1,0 +1,82 @@
+<ion-view cache-view="false" view-title="Attendance">
+  <ion-content class="padding">
+    <div style="text-align: center;">
+      <h3 style="opacity: 0.5">Take Attendance</h3>
+    </div>
+
+    <hr />
+    <form name="selectClassform" ng-show="showForms.classSelectForm">
+      <div>
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Class
+          </div>
+          <select ng-options="(class.class_name + ' - ' + class.section) for class in classes" ng-model="seletedClass.value" required>
+            <option value="">Please choose</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Session
+          </div>
+          <select ng-model="seletedClass.session" required>
+            <option value="">Please Choose</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+          </select>
+        </label>
+      </div>
+      <div>
+        <button class="button button-block button-positive" ng-disabled="selectClassform.$invalid" ng-click="fetchChildren(seletedClass)"> Get Children </button>
+      </div>
+    </form>
+    <div ng-show="showForms.studentsDisplayForm">
+      <div class="row">
+
+      </div>
+    </div>
+    <form name="childrenform" ng-show="showForms.studentsDisplayForm">
+      <div class="list">
+        <div class="item item-divider">
+          <div class="row">
+            <div class="col col-50">
+              Name
+            </div>
+            <div class="col col-16">
+              Present
+            </div>
+            <div class="col col-16">
+              Absent
+            </div>
+            <div class="col col-16">
+              Late
+            </div>
+          </div>
+        </div>
+        <div class="item" ng-repeat="student in students">
+          <div class="row">
+            <div class="col col-50 small-font-name">
+              {{student.student_first_name}} {{(student.student_last_name.length+student.student_first_name.length) > 20 ? student.student_last_name.substring(0, 1) : student.student_last_name }}
+            </div>
+            <div class="col col-16 check-box-right">
+              <input type="radio" name={{attendance[$index]}} value="P" ng-model="attendiesList['attendie'+($index+1)]"/>
+            </div>
+            <div class="col col-16 check-box-right">
+              <input type="radio" name={{attendance[$index]}} value="A" ng-model="attendiesList['attendie'+($index+1)]"/>
+            </div>
+            <div class="col col-16 check-box-right">
+              <input type="radio" name={{attendance[$index]}} value="L" ng-model="attendiesList['attendie'+($index+1)]"/>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <button class="button button-block button-positive" ng-disabled="" ng-click="showResults(attendiesList)"> Submit Attendance </button>
+        </div>
+      </div>
+    </form>
+
+  </ion-content>
+</ion-view>
