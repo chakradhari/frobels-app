@@ -130,20 +130,6 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
-  .state('app.singlephoto', {
-    url: '/singlephoto',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/singlephoto.html',
-        controller: 'SingleImageController'
-      }
-    },
-    params: {
-      url: null
-    }
-  })
-
-
   .state('app.notifications', {
     url: '/notifications',
     views: {
@@ -294,6 +280,19 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
+  .state('app.singlephoto', {
+    url: '/singlephoto',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/singlephoto.html',
+        controller: 'SingleImageController'
+      }
+    },
+    params: {
+      url: null
+    }
+  })
+
   /*
   .state('app.techercreateassignment', {
     url: '/createassignment',
@@ -317,7 +316,8 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
   })
   */
 
-  // $urlRouterProvider.otherwise('/app/message/1');
+  // $urlRouterProvider.otherwise('/app/singlephoto');
+
 
   $urlRouterProvider.otherwise(function($injector, $location) {
     var state = $injector.get('$state');
@@ -328,6 +328,7 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
         state.go('login');
       }
   });
+  
 
 
 
