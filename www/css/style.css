@@ -98,6 +98,38 @@
 .fa-heart, .fa-glide, .fa-bell {
   color: #ffa31a;
 }
+
+/*  Table design */
+.header .col {
+  background-color:lightgrey;
+}
+
+.col-table {
+  border: solid 1px grey;
+  border-bottom-style: none;
+  border-right-style: none;
+}
+
+.small-font-name-table {
+    font-size: 12px;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px grey;
+}
+
+
+/*
+.col:last-child {
+  border-right: solid 1px grey;
+}
+
+.row:last-child .col {
+  border-bottom: solid 1px grey;
+}
+
+/* Table design end*/
+
 .album-heading {
   border: bisque;
   text-align: center;
