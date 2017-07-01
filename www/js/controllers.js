@@ -508,14 +508,17 @@ $scope.showProfile = function() {
   };
 
   $scope.getChat = function(getChatRequestParams) {
+    $rootScope.$broadcast('loading:show');
     ChatService.getChat(getChatRequestParams).then(
       function(response) {
         console.log(response);
         $scope.chatHistoryList = response.data.chats;
         $scope.addMessagesOfChatHistory();
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -607,6 +610,7 @@ $scope.showProfile = function() {
     var teacherId = $state.params.teacherId || JSON.parse(window.localStorage.getItem('loginDetails')).object_id;
     $scope.loginDetails = $rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails'));
     $scope.getParentList = function(teacherId) {
+      $rootScope.$broadcast('loading:show');
       TeacherService.parentListForTeacher(teacherId).then(
         function(response) {
             console.log(response);
@@ -636,9 +640,11 @@ $scope.showProfile = function() {
           console.log(response);
           $scope.chatHistoryList = response.data.chats;
           $scope.getParentList(teacherId);
+          $rootScope.$broadcast('loading:hide');
         },
         function(error) {
           console.log(error);
+          $rootScope.$broadcast('loading:hide');
         }
       )
     };
@@ -676,25 +682,31 @@ $scope.showProfile = function() {
   }
 
   $scope.getTeacherProfile = function(teacherId) {
+    $rootScope.$broadcast('loading:show');
     ProfileService.viewTeacherProfile(teacherId).then(
       function(response) {
         console.log(response);
         $scope.data = response.data[0];
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
 
   $scope.getStudentProfile = function(studentId) {
+    $rootScope.$broadcast('loading:show');
     ProfileService.viewProfileForStudent(studentId).then(
       function(response) {
         console.log(response);
         $scope.data = response.data[0];
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -709,19 +721,22 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ParentAssignmentController', ['$scope', '$stateParams', 'AssignmentService', function($scope, $stateParams, AssignmentService) {
+.controller('ParentAssignmentController', ['$scope', '$stateParams', '$rootScope', 'AssignmentService', function($scope, $stateParams, $rootScope, AssignmentService) {
   $scope.studentId = $stateParams.studentId;
 
   /* View Assignments for parent child*/
   $scope.getAssigmentsForParent = function(studentId) {
+    $rootScope.$broadcast('loading:show');
     var requestParams = {studentId : studentId};
     AssignmentService.getAssignments(requestParams).then(
       function(response) {
         console.log(response);
         $scope.assignments = response.data;
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
-
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -729,14 +744,17 @@ $scope.showProfile = function() {
   /* View Assignments for teacher */
 
   $scope.getAssigmentsForTeacher = function(teacherId) {
+    $rootScope.$broadcast('loading:show');
     var requestParams = {teacherId : teacherId};
     AssignmentService.getAssignments(requestParams).then(
       function(response) {
         console.log(response);
         $scope.assignments = response.data;
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -751,21 +769,23 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('TeacherAssignmentController', ['$scope', 'AssignmentService', function($scope, AssignmentService) {
+.controller('TeacherAssignmentController', ['$scope', '$rootScope', '$cordovaToast', 'AssignmentService', function($scope, $rootScope, $cordovaToast, AssignmentService) {
   $scope.getAssigmentsForTeacher = function(teacherId) {
+    $rootScope.$broadcast('loading:show');
     var requestParams = {teacherId: teacherId}
     AssignmentService.getAssignments(requestParams).then(
       function(response) {
-
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
-
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
 
   $scope.createAssignment = function(selectedItem) {
     console.log(selectedItem);
+    $rootScope.$broadcast('loading:show');
     var requestParams = {
       classId: selectedItem.class.class_id,
       teacherId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
@@ -777,9 +797,19 @@ $scope.showProfile = function() {
       function(response) {
         console.log(response);
         $scope.seletecItem = {};
+        $rootScope.$broadcast('loading:hide');
+        $cordovaToast.showLongTop("Assignment created successfully").then(
+          function(success) {
+
+          },
+          function(error) {
+
+          }
+        )
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
 
@@ -788,14 +818,17 @@ $scope.showProfile = function() {
   $scope.seletecItem = {};
 
   $scope.getAllClassAndSubjects = function() {
+    $rootScope.$broadcast('loading:show');
     AssignmentService.getListOfClassesAndSubjcts().then(
       function(response) {
         console.log(response);
         $scope.classes = response.data.classes;
-        $scope.subjects = response.data.subjects
+        $scope.subjects = response.data.subjects;
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
-
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -803,7 +836,7 @@ $scope.showProfile = function() {
   $scope.getAllClassAndSubjects();
 }])
 
-.controller('TeacherAttendanceController', ['$scope', 'AssignmentService', 'AttendanceService', function($scope, AssignmentService, AttendanceService) {
+.controller('TeacherAttendanceController', ['$scope', '$rootScope', '$cordovaToast', 'AssignmentService', 'AttendanceService', function($scope, $rootScope, cordovaToast, AssignmentService, AttendanceService) {
   $scope.seletecdClass = {
     value: '',
     session: ''
@@ -817,12 +850,15 @@ $scope.showProfile = function() {
   // $scope.attendiesList1 = [];
 
   $scope.getListOfClassesAndSubjects = function() {
+    $rootScope.$broadcast('loading:show');
     AssignmentService.getListOfClassesAndSubjcts().then(
       function(response) {
         $scope.classes = response.data.classes;
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   }
@@ -830,7 +866,7 @@ $scope.showProfile = function() {
   $scope.getListOfClassesAndSubjects();
 
   $scope.fetchChildren = function(selectedClass) {
-
+    $rootScope.$broadcast('loading:show');
     AttendanceService.getStudentsByClassId(selectedClass.value.class_id, selectedClass.session).then(
       function(response) {
         console.log(response);
@@ -856,9 +892,11 @@ $scope.showProfile = function() {
           $scope.showForms.studentsDisplayForm = true;
 
         }
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
-
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
 
@@ -912,24 +950,45 @@ $scope.showProfile = function() {
       teacherId: t_id
     }
     if(type === 'Insert') {
+      $rootScope.$broadcast('loading:show');
       AttendanceService.insertStudentAttendance(requestParams).then(
         function(response) {
           if(response) {
-            state.go('app.dashboard');
+            $rootScope.$broadcast('loading:hide');
+            $cordovaToast.showLongTop("Attendance inserted successfully").then(
+              function(success) {
+                state.go('app.dashboard');
+              },
+              function(error) {
+
+              }
+            )
+
           }
         },
         function(error) {
+          $rootScope.$broadcast('loading:hide');
           console.log(error);
         }
       )
     } else {
+      $rootScope.$broadcast('loading:show');
       AttendanceService.updateStudentAttendance(requestParams).then(
         function(response) {
           if(response) {
-            state.go('app.dashboard');
+            $rootScope.$broadcast('loading:hide');
+            $cordovaToast.showLongTop("Attendance updated successfully").then(
+              function(success) {
+                state.go('app.dashboard');
+              },
+              function(error) {
+
+              }
+            )
           }
         },
         function(error) {
+          $rootScope.$broadcast('loading:hide');
           console.log(error);
         }
       )
@@ -938,16 +997,19 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ContactUsController', ["$scope", "ContactusService", function($scope, ContactusService) {
+.controller('ContactUsController', ["$scope", '$rootScope', "ContactusService", function($scope, $rootScope, ContactusService) {
   var schoolId = window.localStorage.getItem('schoolId');
   console.log(schoolId);
   $scope.getSchoolContact = function() {
+    $rootScope.$broadcast('loading:show');
     ContactusService.contactUs(schoolId).then(
       function(response) {
         $scope.schoolDetails = response.data.schoolDetails[0];
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
@@ -956,46 +1018,53 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('SearchParentController', ["$scope", "TeacherService", function($scope, TeacherService) {
+.controller('SearchParentController', ["$scope", '$rootScope', "TeacherService", function($scope, $rootScope, TeacherService) {
   $scope.showDetails = false;
   $scope.searchParent = function(admNo) {
+    $rootScope.$broadcast('loading:show');
     TeacherService.searchparent(admNo).then(
       function(response) {
         console.log(response);
         if(response.data.length) {
           $scope.showDetails = 'show';
           $scope.parentDetails = response.data[0];
+
         } else {
           $scope.showDetails = 'error';
         }
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
 
 }])
 
-.controller('TimeTableController', ["$scope", "TeacherService", function($scope, TeacherService) {
+.controller('TimeTableController', ["$scope", "$rootScope", "TeacherService", function($scope, $rootScope, TeacherService) {
   $scope.timetableData = [];
   $scope.timetable = function() {
+    $rootScope.$broadcast('loading:show');
     TeacherService.timetable(JSON.parse(window.localStorage.getItem('loginDetails')).object_id).then(
       function(response) {
         console.log(response);
         if(response.data.length > 0) {
           $scope.timetableData = response.data;
         }
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
   $scope.timetable();
 }])
 
-.controller('ApplyLeaveController', ["$scope", "TeacherService", function($scope, TeacherService) {
+.controller('ApplyLeaveController', ["$scope", "$rootScope", "TeacherService", function($scope, $rootScope, TeacherService) {
     $scope.applyObj = {};
 
     $scope.applyLeave = function(obj) {
@@ -1007,49 +1076,58 @@ $scope.showProfile = function() {
         type: 'teacher'
       };
 
+      $rootScope.$broadcast('loading:show');
       TeacherService.insertLeaveDetails(requestParams).then(
         function(response) {
           console.log(response);
+          $rootScope.$broadcast('loading:hide');
         },
         function(error) {
           console.log(error);
+          $rootScope.$broadcast('loading:hide');
         }
       )
     };
 }])
 
-.controller('ViewAppliedLeavesController', ["$scope", "TeacherService", function($scope, TeacherService) {
+.controller('ViewAppliedLeavesController', ["$scope", "$rootScope", "TeacherService", function($scope, $rootScope, TeacherService) {
     $scope.showListOfDetails = function() {
       var requestParams = {
         objectId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
         type: 'teacher'
       };
 
+      $rootScope.$broadcast('loading:show');
       TeacherService.getLeaveDetails(requestParams).then(
         function(response) {
           console.log(response);
           $scope.noOfDays = response.data.noOfDays;
           $scope.details = response.data.leaveDetails;
+          $rootScope.$broadcast('loading:hide');
         },
         function(error) {
           console.log(error);
+          $rootScope.$broadcast('loading:hide');
         }
       )
     };
     $scope.showListOfDetails();
 }])
 
-.controller('FeeDetailsController', ["$scope", "ParentService", function($scope, ParentService) {
+.controller('FeeDetailsController', ["$scope", "$rootScope", "ParentService", function($scope, $rootScope, ParentService) {
   $scope.feeDetails = function() {
     // window.localStorage.currentStudentId
     // 1367 for testing
+    $rootScope.$broadcast('loading:show');
     ParentService.feedetails(window.localStorage.currentStudentId).then(
       function(response) {
         console.log(response);
         $scope.details = response.data.feeDetails;
+        $rootScope.$broadcast('loading:hide');
       },
       function(error) {
         console.log(error);
+        $rootScope.$broadcast('loading:hide');
       }
     )
   };
