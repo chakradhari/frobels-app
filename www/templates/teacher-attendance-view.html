@@ -41,7 +41,10 @@
       <div class="list">
         <div class="item item-divider">
           <div class="row">
-            <div class="col col-50">
+            <div class="col col-15" style="margin-left: -15px;">
+              Roll No
+            </div>
+            <div class="col col-35">
               Name
             </div>
             <div class="col col-16">
@@ -50,15 +53,19 @@
             <div class="col col-16">
               Absent
             </div>
-            <div class="col col-16">
+            <div class="col col-16" style="margin-right: -48px;">
               Late
             </div>
           </div>
         </div>
         <div class="item" ng-repeat="student in students">
           <div class="row">
-            <div class="col col-50 small-font-name">
-              {{student.student_first_name}} {{(student.student_last_name.length+student.student_first_name.length) > 20 ? student.student_last_name.substring(0, 1) : student.student_last_name }}
+            <div class="col col-15">
+              {{student.student_roll_num}}
+            </div>
+            <div class="col col-35 small-font-name">
+              <!-- {{student.student_first_name}} {{(student.student_last_name.length+student.student_first_name.length) > 20 ? student.student_last_name.substring(0, 1) : student.student_last_name }} -->
+              {{student.student_first_name}} {{student.student_last_name.substring(0, 1)}}
             </div>
             <div class="col col-16 check-box-right">
               <input type="radio" name={{attendance[$index]}} value="P" ng-model="attendiesList['attendie'+($index+1)]"/>

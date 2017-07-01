@@ -1,9 +1,18 @@
-<ion-view view-title={{album.album_name}}>
+<ion-view view-title={{album.album_name}} cache-view="false">
   <ion-content>
     <div class="row" ng-repeat="album in albumRows">
       <div class="col-25" ng-repeat="image in album">
-        <img ng-src="{{frobelsApi + image.pic_path}}" width="100%" height="100px">
+        <a ui-sref="app.singlephoto({url: frobelsApi + image.pic_path})" ui-sref-active="active">
+          <img ng-src="{{frobelsApi + image.pic_path}}" width="100%" height="100px">
+        </a>
       </div>
     </div>
   </ion-content>
 </ion-view>
+
+<!--
+<a href="#/app/singlephoto/{{frobelsApi + image.pic_path}}">
+  <img ng-src="{{frobelsApi + image.pic_path}}" width="100%" height="100px">
+</a>
+
+-->

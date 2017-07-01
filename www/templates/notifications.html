@@ -1,6 +1,13 @@
 <ion-view view-title="Notifications">
   <ion-content class="padding">
-    <ion-list>
+
+    <div ng-show="notifications.length == 0">
+      <div class="card no-data-card">
+        No Assignments to show.
+      </div>
+    </div>
+
+    <ion-list ng-show="notifications.length > 0">
       <ion-item class="item-text-wrap" ng-repeat="notification in notifications">
         {{notification.message}}
       </ion-item>

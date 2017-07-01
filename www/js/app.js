@@ -31,18 +31,6 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     $ionicLoading.hide();
   })
 
-  /*
-    $rootScope.$on('$stateChangeStart', function(event, toState, toParams) {
-      console.log(toState.name);
-      if($rootScope.messageCount) {
-        if($rootScope.messageCount > 0 && toState.name === 'app.notifications') {
-          $rootScope.messageCount = 0;
-        }
-      }
-    })
-  */
-
-
 })
 
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {
@@ -139,6 +127,19 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     },
     params: {
       album: null
+    }
+  })
+
+  .state('app.singlephoto', {
+    url: '/singlephoto',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/singlephoto.html',
+        controller: 'SingleImageController'
+      }
+    },
+    params: {
+      url: null
     }
   })
 
@@ -239,6 +240,56 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
       "menuContent": {
         templateUrl: 'templates/contact-us.html',
         controller: 'ContactUsController'
+      }
+    }
+  })
+
+  .state('app.timetable', {
+    url: '/timetable',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/timetable.html',
+        controller: 'TimeTableController'
+      }
+    }
+  })
+
+  .state('app.searchparent', {
+    url: '/searchparent',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/searchparent.html',
+        controller: 'SearchParentController'
+      }
+    }
+  })
+
+  .state('app.teacherapplyleave', {
+    url: '/teacherapplyleave',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/teacher-leave.html',
+        controller: 'ApplyLeaveController'
+      }
+    }
+  })
+
+  .state('app.teacherviewleaves', {
+    url: '/teacherviewleaves',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/teacher-applied-leaves.html',
+        controller: 'ViewAppliedLeavesController'
+      }
+    }
+  })
+
+  .state('app.feedetails', {
+    url: '/feedetails',
+    views: {
+      "menuContent": {
+        templateUrl: 'templates/fee-details.html',
+        controller: 'FeeDetailsController'
       }
     }
   })

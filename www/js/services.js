@@ -326,6 +326,30 @@ angular.module('Forbels.services', [])
     };
   }])
 
+  .service('ParentService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
+    this.feedetails = function(studentId) {
+      var deferred = $q.defer();
+      var requestParams = {
+        studentId: studentId
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getStudentFeeDetails.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    // http://frobelsedu.com/webservices/getStudentFeeDetails.php
+  }])
+
   .service('NotificationService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
     this.notifications = function() {
       var deferred = $q.defer();
@@ -383,7 +407,84 @@ angular.module('Forbels.services', [])
         }
       );
       return deferred.promise;
-    }
+    };
+
+    this.searchparent = function(admNo) {
+      var deferred = $q.defer();
+      var requestParams = {
+        admNo: admNo
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getStudentProfile.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    // frobelsedu.com/webservices/getStudentProfile.php
+    this.timetable = function(teacherId) {
+      var deferred = $q.defer();
+      var requestParams = {
+        teacherId: teacherId
+      };
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getTimeTableForTeacher.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    this.insertLeaveDetails = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/insertLeaveDetails.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    this.getLeaveDetails = function(requestParams) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: FrobelsApi + '/webservices/getLeaveDetails.php',
+        params: requestParams
+      }).then(
+        function(response) {
+          deferred.resolve(response);
+        },
+        function(error) {
+          deferred.reject(error);
+        }
+      );
+      return deferred.promise;
+    };
+
+    // http://www.frobelsedu.com/webservices/getTimeTableForTeacher.php
   }])
 
   .service('ProfileService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {

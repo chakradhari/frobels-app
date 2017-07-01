@@ -2,6 +2,8 @@ angular.module('Forbels.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicPlatform, $cordovaToast, $ionicModal, $ionicPopup, $timeout, $state, $ionicHistory, LoginService, ContactusService) {
 
+$scope.loginUser =  window.localStorage.getItem('login_type');
+
 $scope.logout = function() {
 
   window.localStorage.clear();
@@ -13,6 +15,22 @@ $scope.logout = function() {
 $scope.contactus = function() {
   $state.go('app.contactus')
 };
+
+$scope.timetableview = function() {
+  $state.go('app.timetable');
+};
+
+$scope.searchparentview = function() {
+  $state.go('app.searchparent');
+};
+
+$scope.applyleave = function() {
+  $state.go('app.teacherapplyleave');
+};
+
+$scope.feeDetails = function() {
+  $state.go('app.feedetails');
+}
 
 $scope.showProfile = function() {
   if(window.localStorage.getItem('login_type') == 'teacher') {
@@ -58,6 +76,7 @@ $scope.showProfile = function() {
           }
           window.localStorage.setItem('oauth', result.data.userdetails.oauth);
           $rootScope.loginDetails = result.data.userdetails;
+          $rootScope.login_type = result.data.userdetails.login_type;
           window.localStorage.setItem('loginDetails', JSON.stringify(result.data.userdetails));
           window.localStorage.setItem('login_type', result.data.userdetails.login_type);
           window.localStorage.setItem('schoolId', result.data.schoolId);
@@ -306,7 +325,8 @@ $scope.showProfile = function() {
 }])
 
 .controller('ImageGalleryController', ["$scope", "$state", "$rootScope", "ImageGalleryService", function($scope, $state, $rootScope, ImageGalleryService) {
-  $scope.FrobelsApi = "http://www.frobelsedu.com";
+  console.log("Entered");
+  $scope.FrobelsApi = "http://www.frobelsedu.com/admin/upload_images/galary_images/";
   $scope.imageGallery = function() {
     $rootScope.$broadcast('loading:show');
     ImageGalleryService.getImageGallery().then(
@@ -356,6 +376,22 @@ $scope.showProfile = function() {
     ChatService.getTeachersList(studentId).then(
       function(response) {
         $scope.teachersData = response.data.chat_members;
+        angular.forEach($scope.teachersData, function(subjectwiseInfo, key) {
+          var emp_ids = subjectwiseInfo.emp_id.split(',');
+          var emp_names = subjectwiseInfo.emp_name.split(',');
+          var emp_phones = subjectwiseInfo.emp_phone.split(',');
+          var employees = [];
+          for(var emp in emp_names) {
+            var employee = {
+              emp_name: emp_names[emp],
+              emp_id: emp_ids[emp],
+              emp_phone: emp_phones[emp]
+            };
+            employees.push(employee);
+          }
+          $scope.teachersData[key].employees = employees;
+        })
+        console.log($scope.teachersData);
         console.log(response);
         $rootScope.$broadcast('loading:hide');
       },
@@ -411,8 +447,15 @@ $scope.showProfile = function() {
     return showDot;
     };
 
-  $scope.textTeacher = function(index) {
-    $state.go('app.message', {memberData: $scope.teachersData[index]});
+  $scope.textTeacher = function(emp, subject) {
+    console.log(emp.emp_id + " " + subject);
+    var memberData = {
+      emp_id: emp.emp_id,
+      emp_name: emp.emp_name,
+      subject_name: subject,
+      emp_phone: emp.emp_phone
+    };
+    $state.go('app.message', {memberData: memberData});
   };
 }])
 
@@ -426,8 +469,11 @@ $scope.showProfile = function() {
   if($scope.loginDetails) {
     if($scope.loginDetails.object_id) {
       $scope.myId = $scope.loginDetails.object_id;
+      $scope.myType = $scope.loginDetails.login_type;
     }
   }
+
+  $scope.phoneNumber = $scope.userData.father_mobile_num || $scope.userData.emp_phone
 
   $scope.sendMessage = function() {
     var requestParams = {
@@ -440,7 +486,8 @@ $scope.showProfile = function() {
 
     $scope.messages.push({
       text: $scope.data.message,
-      id: $scope.loginDetails.object_id
+      id: $scope.loginDetails.object_id,
+      type: $scope.loginDetails.login_type
     });
 
     delete $scope.data.message;
@@ -503,7 +550,8 @@ $scope.showProfile = function() {
         historyMessages.forEach(function(value, index) {
           $scope.messages.push({
             text: value.message_description,
-            id: value.message_from
+            id: value.message_from,
+            type: value.message_to_type
           });
           $scope.subjectForTeacher = value.message_subject;
           if(value.message_read == '0') {
@@ -524,13 +572,13 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('AlbumController', ["$scope", "$state", "FrobelsApi", function($scope, $state, FrobelsApi) {
+.controller('AlbumController', ["$scope", "$state", "$timeout", function($scope, $state, $timeout) {
   $scope.album = $state.params.album;
   console.log($scope.album);
   // var numberOfRecords = Math.ceil($scope.album[0].gallery.length/4)
   $scope.albumRows = chunk($scope.album.gallery, 4);
   console.log($scope.albumRows);
-  $scope.frobelsApi = FrobelsApi;
+  $scope.frobelsApi = "http://www.frobelsedu.com/admin/upload_images/galary_images/";
 
   function chunk(arr, size) {
     var newArr = [];
@@ -540,6 +588,19 @@ $scope.showProfile = function() {
     return newArr;
   }
 
+  $scope.singleImage = function(imageUrl) {
+    $timeout(function() {
+      $state.go('app.singlephoto', {url: imageUrl});
+    }, 3000);
+
+  };
+
+}])
+
+.controller('SingleImageController', ["$scope", "$state", function($scope, $state) {
+  console.log("Entered");
+  $scope.imageUrl = $state.params.url;
+  console.log($scope.imageUrl);
 }])
 
 .controller('TeacherController', ["$scope", "$state", "$rootScope", "FrobelsApi", "TeacherService", "ChatService", function($scope, $state, $rootScope, FrobelsApi, TeacherService, ChatService) {
@@ -895,6 +956,106 @@ $scope.showProfile = function() {
 
 }])
 
+.controller('SearchParentController', ["$scope", "TeacherService", function($scope, TeacherService) {
+  $scope.showDetails = false;
+  $scope.searchParent = function(admNo) {
+    TeacherService.searchparent(admNo).then(
+      function(response) {
+        console.log(response);
+        if(response.data.length) {
+          $scope.showDetails = 'show';
+          $scope.parentDetails = response.data[0];
+        } else {
+          $scope.showDetails = 'error';
+        }
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+}])
+
+.controller('TimeTableController', ["$scope", "TeacherService", function($scope, TeacherService) {
+  $scope.timetableData = [];
+  $scope.timetable = function() {
+    TeacherService.timetable(JSON.parse(window.localStorage.getItem('loginDetails')).object_id).then(
+      function(response) {
+        console.log(response);
+        if(response.data.length > 0) {
+          $scope.timetableData = response.data;
+        }
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+  $scope.timetable();
+}])
+
+.controller('ApplyLeaveController', ["$scope", "TeacherService", function($scope, TeacherService) {
+    $scope.applyObj = {};
+
+    $scope.applyLeave = function(obj) {
+      var requestParams = {
+        from_date: obj.from,
+        to_date: obj.to,
+        objectId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
+        desc: obj.desc,
+        type: 'teacher'
+      };
+
+      TeacherService.insertLeaveDetails(requestParams).then(
+        function(response) {
+          console.log(response);
+        },
+        function(error) {
+          console.log(error);
+        }
+      )
+    };
+}])
+
+.controller('ViewAppliedLeavesController', ["$scope", "TeacherService", function($scope, TeacherService) {
+    $scope.showListOfDetails = function() {
+      var requestParams = {
+        objectId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
+        type: 'teacher'
+      };
+
+      TeacherService.getLeaveDetails(requestParams).then(
+        function(response) {
+          console.log(response);
+          $scope.noOfDays = response.data.noOfDays;
+          $scope.details = response.data.leaveDetails;
+        },
+        function(error) {
+          console.log(error);
+        }
+      )
+    };
+    $scope.showListOfDetails();
+}])
+
+.controller('FeeDetailsController', ["$scope", "ParentService", function($scope, ParentService) {
+  $scope.feeDetails = function() {
+    // window.localStorage.currentStudentId
+    // 1367 for testing
+    ParentService.feedetails(window.localStorage.currentStudentId).then(
+      function(response) {
+        console.log(response);
+        $scope.details = response.data.feeDetails;
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+  };
+
+  $scope.feeDetails();
+}])
 
 
 /*

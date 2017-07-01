@@ -9,10 +9,13 @@
             <a href="javascript:void(0)" class="text-subdued-frobels">{{subject.subject_name}}</a>
           </p>
           <div ng-show="showDetails">
-            <p>&nbsp;</p>
-            <a href="javascript:void(0)" ng-click="textTeacher($index)" class="text-subdued-frobels">{{subject.emp_name}}</a>
-            <i class="icon ion-person" style="position: absolute; right: 186px; top: 18px;" ui-sref="app.viewprofile({type: 'teacher', personId: {{subject.emp_id}}})"></i>
-            <span class="unread-highlighter" ng-if="showUnread(subject.emp_id)">.</span>
+            <div ng-repeat="emp in subject.employees">
+              <p>&nbsp;</p>
+              <a href="javascript:void(0)" ng-click="textTeacher(emp, subject.subject_name)" class="text-subdued-frobels">{{emp.emp_name}}</a>
+              <!-- <i class="icon ion-person" ui-sref="app.viewprofile({type: 'teacher', personId: {{emp.emp_id}}})"></i> -->
+              <a ui-sref="app.viewprofile({type: 'teacher', personId: {{emp.emp_id}}})">Profile</a>
+              <span class="unread-highlighter" ng-if="showUnread(emp.emp_id)">.</span>
+            </div>
           </div>
         <i class="icon icon-accessory" ng-class="{'ion-chevron-right' : !showDetails, 'ion-chevron-down': showDetails}"></i>
       </ion-item>

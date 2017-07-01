@@ -19,6 +19,18 @@
         <ion-item menu-close ng-click="showProfile()">
           View Profile
         </ion-item>
+        <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="applyleave()">
+          Leave Management
+        </ion-item>
+        <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="timetableview()">
+          Time Table
+        </ion-item>
+        <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="searchparentview()">
+          Search Parent
+        </ion-item>
+        <ion-item menu-close ng-if="loginUser == 'parent'" ng-click="feeDetails()">
+          Fee Details
+        </ion-item>
         <ion-item menu-close ng-click="contactus()">
           Contact Us
         </ion-item>

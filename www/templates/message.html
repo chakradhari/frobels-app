@@ -1,6 +1,10 @@
 <ion-view view-title="Chat">
+  <ion-nav-buttons side="right">
+    <a class="button button-icon button-clear ion-ios-telephone" ng-href="tel:{{phoneNumber}}">
+    </a>
+  </ion-nav-buttons>
   <ion-content class="padding" style="background-color: #f0f5f5">
-    <div ng-repeat="message in messages" ng-class="{'other': message.id != myId}" class="messages">
+    <div ng-repeat="message in messages" ng-class="{'other': (message.id != myId)}" class="messages">
       <div class="message">
         <span class="message-span">
           {{message.text}}
