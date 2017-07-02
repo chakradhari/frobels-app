@@ -114,9 +114,6 @@
     font-size: 12px;
 }
 
-.row:last-child .col {
-  border-bottom: solid 1px grey;
-}
 
 
 /*
@@ -129,6 +126,7 @@
 }
 
 /* Table design end*/
+
 
 .album-heading {
   border: bisque;

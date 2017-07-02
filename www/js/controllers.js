@@ -781,6 +781,7 @@ $scope.showProfile = function() {
 }])
 
 .controller('TeacherAssignmentController', ['$scope', '$rootScope', '$cordovaToast', 'AssignmentService', function($scope, $rootScope, $cordovaToast, AssignmentService) {
+  $scope.seletedItem = {};
   $scope.getAssigmentsForTeacher = function(teacherId) {
     $rootScope.$broadcast('loading:show');
     var requestParams = {teacherId: teacherId}
@@ -807,7 +808,7 @@ $scope.showProfile = function() {
     AssignmentService.createAssignments(requestParams).then(
       function(response) {
         console.log(response);
-        $scope.seletecItem = {};
+        $scope.seletedItem = {};
         $rootScope.$broadcast('loading:hide');
         $cordovaToast.showLongTop("Assignment created successfully").then(
           function(success) {
@@ -847,7 +848,7 @@ $scope.showProfile = function() {
   $scope.getAllClassAndSubjects();
 }])
 
-.controller('TeacherAttendanceController', ['$scope', '$rootScope', '$cordovaToast', 'AssignmentService', 'AttendanceService', function($scope, $rootScope, cordovaToast, AssignmentService, AttendanceService) {
+.controller('TeacherAttendanceController', ['$scope', '$state', '$rootScope', '$cordovaToast', 'AssignmentService', 'AttendanceService', function($scope, $state, $rootScope, $cordovaToast, AssignmentService, AttendanceService) {
   $scope.seletecdClass = {
     value: '',
     session: ''
@@ -968,7 +969,7 @@ $scope.showProfile = function() {
             $rootScope.$broadcast('loading:hide');
             $cordovaToast.showLongTop("Attendance inserted successfully").then(
               function(success) {
-                state.go('app.dashboard');
+                $state.go('app.dashboard');
               },
               function(error) {
 
@@ -990,7 +991,7 @@ $scope.showProfile = function() {
             $rootScope.$broadcast('loading:hide');
             $cordovaToast.showLongTop("Attendance updated successfully").then(
               function(success) {
-                state.go('app.dashboard');
+                $state.go('app.dashboard');
               },
               function(error) {
 
@@ -1075,7 +1076,7 @@ $scope.showProfile = function() {
   $scope.timetable();
 }])
 
-.controller('ApplyLeaveController', ["$scope", "$rootScope", "TeacherService", function($scope, $rootScope, TeacherService) {
+.controller('ApplyLeaveController', ["$scope", "$rootScope", "$cordovaToast", "TeacherService", function($scope, $rootScope, $cordovaToast, TeacherService) {
     $scope.applyObj = {};
 
     $scope.applyLeave = function(obj) {
@@ -1084,7 +1085,8 @@ $scope.showProfile = function() {
         to_date: obj.to,
         objectId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
         desc: obj.desc,
-        type: 'teacher'
+        type: 'teacher',
+        days: obj.days
       };
 
       $rootScope.$broadcast('loading:show');
@@ -1092,6 +1094,15 @@ $scope.showProfile = function() {
         function(response) {
           console.log(response);
           $rootScope.$broadcast('loading:hide');
+          $cordovaToast.showLongTop("Leave applied successfully").then(
+            function(success) {
+              $scope.applyObj = {};
+              // $state.go('app.dashboard');
+            },
+            function(error) {
+
+            }
+          )
         },
         function(error) {
           console.log(error);
