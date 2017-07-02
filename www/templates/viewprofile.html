@@ -36,11 +36,11 @@
       <hr />
       <div class="row">
         <p>Phone :</p>
-        <p ng-if="data.emp_phone_no">
+        <p ng-if="data.emp_phone_no.length == 10">
           <a href="tel:{{data.emp_phone_no}}">{{data.emp_phone_no}}</a>
           <!-- {{data.phone_number || '-'}} -->
         </p>
-        <p ng-if="!data.emp_phone_no">
+        <p ng-if="data.emp_phone_no.length != 10">
           -
         </p>
       </div>
@@ -73,11 +73,11 @@
       <div class="row">
         <div class="col-50">
           <p>Phone Number :</p>
-          <p ng-if="data.phone_number">
+          <p ng-if="data.phone_number.length == 10">
             <a href="tel:{{data.phone_number}}">{{data.phone_number}}</a>
             <!-- {{data.phone_number || '-'}} -->
           </p>
-          <p ng-if="!data.phone_number">
+          <p ng-if="data.phone_number.length != 10">
             -
           </p>
         </div>

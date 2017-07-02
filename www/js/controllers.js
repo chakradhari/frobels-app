@@ -487,7 +487,8 @@ $scope.showProfile = function() {
     $scope.messages.push({
       text: $scope.data.message,
       id: $scope.loginDetails.object_id,
-      type: $scope.loginDetails.login_type
+      type: $scope.loginDetails.login_type,
+      newM: true
     });
 
     delete $scope.data.message;
@@ -565,7 +566,8 @@ $scope.showProfile = function() {
           $scope.messages.push({
             text: value.message_description,
             id: value.message_from,
-            type: value.message_to_type
+            type: value.message_to_type,
+            newM: false
           });
           $scope.subjectForTeacher = value.message_subject;
           if(value.message_read == '0') {
@@ -994,7 +996,7 @@ $scope.showProfile = function() {
                 $state.go('app.dashboard');
               },
               function(error) {
-
+                console.log(error);
               }
             )
           }
