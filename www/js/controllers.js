@@ -545,8 +545,19 @@ $scope.showProfile = function() {
   /* Adding messages to chat history */
   $scope.addMessagesOfChatHistory = function() {
       var updateMessageString = "";
+      /*
+      if($scope.loginDetails.object_id == ($scope.userData.emp_id || $scope.userData.parent_id)) {
+        $scope.myId = $scope.loginDetails.object_id + 'A';
+      }
+      */
+
       var historyMessages = $scope.chatHistoryList.filter(function(value) {
-        return (value.message_to ==  $scope.userData.emp_id || $scope.userData.parent_id) || (value.message_from ==  $scope.userData.emp_id || $scope.userData.parent_id);
+        if($scope.loginDetails.object_id == ($scope.userData.emp_id || $scope.userData.parent_id)) {
+          // $scope.myId = $scope.loginDetails.object_id + 'A';
+          return (value.message_to == $scope.loginDetails.object_id) && (value.message_from == $scope.loginDetails.object_id)
+        } else {
+          return (value.message_to ==  $scope.userData.emp_id || $scope.userData.parent_id) || (value.message_from ==  $scope.userData.emp_id || $scope.userData.parent_id);
+        }
       });
       console.log(historyMessages);
       if(historyMessages.length > 0) {

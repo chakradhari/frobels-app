@@ -4,7 +4,7 @@
     </a>
   </ion-nav-buttons>
   <ion-content class="padding" style="background-color: #f0f5f5">
-    <div ng-repeat="message in messages" ng-class="{'other': (message.id != myId)}" class="messages">
+    <div ng-repeat="message in messages" ng-class="{'other': (message.id != myId || message.type == myType)}" class="messages">
       <div class="message">
         <span class="message-span">
           {{message.text}}
@@ -21,6 +21,12 @@
 </ion-view>
 
 <!--
+(message.id != myId)
+
+message.id != myId && message.type != myType
+
+message.id != myId || message.type != myType
+
 Please send the message to {{teacher.emp_name}}
 <div>
   <ion-item>
