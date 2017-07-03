@@ -473,6 +473,10 @@ $scope.showProfile = function() {
     }
   }
 
+  $scope.openwhatsapp = function(phoneNumber) {
+    window.open('https://api.whatsapp.com/send?phone=91'+phoneNumber, '_system', 'location=yes');
+  }
+
   $scope.phoneNumber = $scope.userData.father_mobile_num || $scope.userData.emp_phone
 
   $scope.sendMessage = function() {

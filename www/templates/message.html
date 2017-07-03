@@ -1,5 +1,7 @@
 <ion-view view-title="Chat">
   <ion-nav-buttons side="right">
+    <a ng-if="phoneNumber.length == 10" class="button button-icon button-clear ion-ios-videocam" style="position: absolute;right: 42px;" href="javascript:void(0)" ng-click="openwhatsapp(phoneNumber)">
+    </a>
     <a ng-if="phoneNumber.length == 10" class="button button-icon button-clear ion-ios-telephone" ng-href="tel:{{phoneNumber}}">
     </a>
   </ion-nav-buttons>
