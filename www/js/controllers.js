@@ -83,8 +83,10 @@ $scope.showProfile = function() {
           if(result.data.userdetails.login_type == 'parent') {
             $state.go('app.dashboard', { childDetails: result.data.userdetails.children_details});
           }
-          else {
+          else if(result.data.userdetails.login_type == 'teacher'){
             $state.go('app.dashboard');
+          } else {
+            $state.go('app.dashboard', { teachers: result.data.teachers});
           }
         }
       },
@@ -197,6 +199,13 @@ $scope.showProfile = function() {
 .controller('DashboradController', ["$scope", "$state", "$ionicPopup", "$rootScope", "dashBoradService", function($scope, $state, $ionicPopup, $rootScope, dashBoradService) {
   console.log($state.params.childDetails);
   // $scope.childDetails = $state.params.childDetails;
+  $scope.teachersList = [];
+  if($state.params.teachers) {
+    window.localStorage.setItem('teachers', JSON.stringify($state.params.teachers));
+  }
+
+  // console.log(JSON.parse(window.localStorage.getItem('teachers')));
+  $scope.teachersList = JSON.parse(window.localStorage.getItem('teachers'));
 
   if($rootScope.messageCount) {
     $scope.messageCount = $rootScope.messageCount;
@@ -349,10 +358,14 @@ $scope.showProfile = function() {
   $scope.imageGallery();
 }])
 
-.controller('NotificationController', ["$scope", "$rootScope", "NotificationService", function($scope, $rootScope, NotificationService) {
+.controller('NotificationController', ["$scope", "$rootScope", "$stateParams", "NotificationService", function($scope, $rootScope, $stateParams, NotificationService) {
+
   $scope.getNotifications = function() {
+    var requestParams = {
+      type: $stateParams.level
+    }
     $rootScope.$broadcast('loading:show');
-    NotificationService.notifications().then(
+    NotificationService.notifications(requestParams).then(
       function(response) {
         $scope.notifications = response.data.notifications;
         console.log($scope.notifications);
@@ -462,14 +475,29 @@ $scope.showProfile = function() {
 /* For sending message. Both for parent and teacher same controller is utilized */
 .controller('MessageController', ["$scope", "$state", "$stateParams", "$rootScope", "MessageService", "ChatService", function($scope, $state, $stateParams, $rootScope, MessageService, ChatService) {
   $scope.userData = $state.params.memberData;
+  if($state.params.teacherId) {
+    $scope.teacherId = $state.params.teacherId;
+  }
+
+  $scope.footer = {
+    view: true
+  };
+
+  console.log($scope.teacherId);
   console.log($scope.userData);
   console.log($rootScope.loginDetails);
-  $scope.loginDetails = $rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails'));
+  $scope.loginDetails = angular.copy($rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails')));
   $scope.data = {};
   if($scope.loginDetails) {
-    if($scope.loginDetails.object_id) {
+    if($scope.loginDetails.login_type !== 'admin' && $scope.loginDetails.object_id) {
       $scope.myId = $scope.loginDetails.object_id;
       $scope.myType = $scope.loginDetails.login_type;
+    } else {
+      $scope.myId = $scope.teacherId;
+      $scope.myType = 'teacher';
+      $scope.loginDetails.object_id = $scope.myId;
+      $scope.loginDetails.login_type = $scope.myType;
+      $scope.footer.view = false;
     }
   }
 
@@ -1163,6 +1191,112 @@ $scope.showProfile = function() {
   $scope.feeDetails();
 }])
 
+.controller('AdminAnnoucmentsController', ["$scope", "$rootScope", "$state", "$cordovaToast", "AdminService", function($scope, $rootScope, $state, $cordovaToast, AdminService) {
+  $scope.assignment = {};
+
+  $scope.createAnnouncement = function(assignment) {
+    $rootScope.$broadcast('loading:show');
+    console.log(assignment);
+
+    var requestParams = {
+      note_from: assignment.from,
+      note_sub: assignment.subject,
+      msg: assignment.message,
+      date: assignment.date,
+      note_to: assignment.to
+    }
+
+    AdminService.createAssignment(requestParams).then(
+      function(response) {
+        console.log(response);
+        $rootScope.$broadcast('loading:hide');
+        $scope.assignment = {};
+        /*
+        $cordovaToast.showShortTop(response.data.response).then(
+          function(success) {
+            $state.go('app.dashboard');
+          },
+          function(error) {
+            console.log(error);
+          }
+        )
+        */
+
+        $state.go('app.dashboard');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  };
+
+}])
+
+.controller('LeaveManagementController', ["$scope", "$rootScope", "AdminService", function($scope, $rootScope, AdminService) {
+  $scope.getLeaveDetails = function() {
+    $rootScope.$broadcast('loading:show');
+    AdminService.getLeaveDetails().then(
+      function(response) {
+        console.log(response);
+        $scope.leaveDetails = response.data.leaveDetails;
+        $rootScope.$broadcast('loading:hide');
+
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  }
+
+  $scope.getLeaveDetails();
+
+
+}])
+
+.controller('AdminChatController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+  $scope.teacherListFilter = {
+    value: ""
+  };
+
+  $scope.teachersList = $state.params.teachers;
+
+
+}])
+
+.controller('AdminParentListViewController', ["$scope", "$rootScope", "$stateParams", "$state", "TeacherService", function($scope, $rootScope, $stateParams, $state, TeacherService) {
+  $scope.teacherId = $stateParams.teacherId;
+
+  $scope.getParentsList = function(teacherId) {
+    $rootScope.$broadcast('loading:show');
+    TeacherService.parentListForTeacher(teacherId).then(
+      function(response) {
+        $scope.parentsList = response.data.chat_members;
+        $rootScope.$broadcast('loading:hide');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    );
+  };
+
+  $scope.viewConversation = function(teacherId, parent) {
+    console.log(teacherId);
+    console.log(parent);
+    // $state.go('app.message', {teacherId: teacherId, meme})
+    $state.go('app.message', {teacherId: teacherId, memberData: parent});
+  };
+
+  $scope.getParentsList($scope.teacherId);
+
+}])
+
+.controller('ConversationViewController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+
+
+}])
 
 /*
 ,

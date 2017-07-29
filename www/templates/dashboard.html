@@ -33,6 +33,81 @@
         </ion-slide>
       </ion-slide-box>
     </div>
+
+    <div ng-if="loginDetails.login_type == 'admin'">
+      <div class="row" style="text-align: center">
+          <div class="col col-33">
+            <a>
+            <img src="img/results.png" width="60px" height="50px">
+            <p class="subdued">Results</p>
+          </a>
+          </div>
+        <div class="col col-33">
+          <a>
+            <img src="img/attendance.png" width="60px" height="50px">
+            <p class="subdued">Attendance</p>
+          </a>
+        </div>
+        <div class="col col-33">
+          <a href="#/app/adminannouncements">
+            <img src="img/Announ.jpeg" width="60px" height="50px">
+            <p class="subdued">Announcement</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="row" style="text-align: center">
+
+        <div class="col col-33">
+          <a ui-sref="app.adminchat({teachers: {{teachersList}}})">
+            <img src="img/chat_with_teacher.png" width="60px" height="50px">
+            <p class="subdued">Online Teacher</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <a href="#/app/image-gallery">
+            <img src="img/image_gallery.png" width="60px" height="50px">
+            <p class="subdued">Image Gallery</p>
+          </a>
+        </div>
+
+        <div class="col col-33">
+          <a href="javascript:void(0)" onclick="window.open('https://www.facebook.com/Frobels-Residential-High-School-1244461868958871', '_system', 'location=yes'); return false;">
+            <img src="img/facebook.png" width="60px" height="50px">
+            <p class="subdued">Facebook</p>
+          </a>
+        </div>
+
+      </div>
+      <!-- https://www.facebook.com/Frobels-Residential-High-School-1244461868958871  openFacebookPage()-->
+      <div class="row" style="text-align: center">
+
+        <div class="col col-33" href="javascript:void(0)">
+          <a href="javascript:void(0)" onclick="window.open('https://www.youtube.com/watch?v=MCoOoxmdHDk', '_system', 'location=yes'); return false;">
+            <img src="img/youtube.png" width="60px" height="50px">
+            <p class="subdued">YouTube</p>
+          </a>
+        </div>
+
+        <!-- ng-click="parentAssignments()" -->
+        <div class="col col-33">
+          <a>
+            <img src="img/assignments.png" width="60px" height="50px">
+            <p class="subdued">Assignments</p>
+          </a>
+        </div>
+
+        <div class="col col-33" href="javascript:void(0)">
+          <a href="javascript:void(0)" onclick="window.open('https://api.whatsapp.com/send?phone=919133312647', '_system', 'location=yes'); return false;">
+            <img src="img/whatsapp.png" width="60px" height="50px">
+            <p class="subdued">Whats app</p>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
     <div ng-if="loginDetails.login_type == 'parent'">
       <div class="row" style="text-align: center">
           <div class="col col-33">
@@ -48,7 +123,7 @@
           </a>
         </div>
         <div class="col col-33">
-          <a href="#/app/notifications">
+          <a href="#/app/notifications/P">
             <img src="img/Announ.jpeg" width="60px" height="50px">
             <p class="subdued">Announcement</p>
           </a>
@@ -105,7 +180,7 @@
       <div class="row" style="text-align: center">
 
         <div class="col col-33">
-          <a href="#/app/notifications">
+          <a href="#/app/notifications/T">
             <img src="img/Announ.jpeg" width="60px" height="50px">
             <p class="subdued">Announcement</p>
           </a>

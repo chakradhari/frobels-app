@@ -72,7 +72,8 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
         }
       },
       params: {
-        childDetails: null
+        childDetails: null,
+        teachers: null
       }
     })
     .state('app.playlists', {
@@ -131,7 +132,7 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
   })
 
   .state('app.notifications', {
-    url: '/notifications',
+    url: '/notifications/:level',
     views: {
       'menuContent': {
         templateUrl: 'templates/notifications.html',
@@ -159,7 +160,8 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
       }
     },
     params: {
-      memberData: null
+      memberData: null,
+      teacherId: null
     }
   })
 
@@ -293,6 +295,65 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
+  .state('app.adminannouncements', {
+    url: '/adminannouncements',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-announcement-view.html',
+        controller: 'AdminAnnoucmentsController'
+      }
+    }
+  })
+
+  .state('app.adminleavemanagement', {
+    url: '/adminleavemanagement',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-leavemanagement-view.html',
+        controller: 'LeaveManagementController'
+      }
+    }
+  })
+
+  .state('app.adminchat', {
+    url: '/adminchat',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-chat-view.html',
+        controller: 'AdminChatController'
+      }
+    },
+    params: {
+      teachers: null
+    }
+  })
+
+  .state('app.adminparentlistview', {
+    url: '/adminparentlistview/:teacherId',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-chat-parentlist-view.html',
+        controller: 'AdminParentListViewController'
+      }
+    },
+    params: {
+      teachers: null
+    }
+  })
+
+  .state('app.conversation', {
+    url: '/conversation',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-conversation-view.html',
+        controller: 'ConversationViewController'
+      }
+    },
+    params: {
+      teachers: null
+    }
+  })
+
   /*
   .state('app.techercreateassignment', {
     url: '/createassignment',
@@ -328,7 +389,7 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
         state.go('login');
       }
   });
-  
+
 
 
 

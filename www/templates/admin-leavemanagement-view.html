@@ -1,0 +1,12 @@
+<ion-view view-title="Leave Management">
+  <ion-content class="padding">
+    <ion-list ng-if="leaveDetails.length > 0">
+      <ion-item class="item-text-wrap" ng-repeat="leave in leaveDetails">
+        {{leave.emp_name}} {{leave.from_date}} {{leave.to_date}} {{leave.no_of_days}}
+      </ion-item>
+    </ion-list>
+    <div class="card" ng-if="leaveDetails.length == 0">
+      <p style="text-align: center; padding: 43px;">No messages to show.</p>
+    </div>
+  </ion-content>
+</ion-view>
