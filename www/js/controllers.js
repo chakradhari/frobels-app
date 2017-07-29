@@ -28,6 +28,10 @@ $scope.applyleave = function() {
   $state.go('app.teacherapplyleave');
 };
 
+$scope.adminLeaveView = function() {
+  $state.go('app.adminleavemanagement')
+}
+
 $scope.feeDetails = function() {
   $state.go('app.feedetails');
 }
@@ -1251,6 +1255,26 @@ $scope.showProfile = function() {
   }
 
   $scope.getLeaveDetails();
+
+  $scope.updateDetails = function(id, status) {
+    console.log(`${id}, ${status}`);
+    var requestParams = {
+      leave_id: id,
+      status: status
+    };
+
+    $rootScope.$broadcast('loading:show');
+    AdminService.updateLeaveDetails(requestParams).then(
+      function(response) {
+        $rootScope.$broadcast('loading:hide');
+        $scope.getLeaveDetails();
+      },
+      function(error) {
+        $rootScope.$broadcast('loading:hide');
+        console.log(error);
+      }
+    )
+  };
 
 
 }])
