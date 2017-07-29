@@ -5,7 +5,7 @@
     </div>
     <ion-list ng-if="parentsList.length > 0">
       <ion-item class="item-text-wrap item-icon-right" ng-repeat="parent in parentsList">
-        <a href="javascript:void(0)" class="text-subdued-frobels" ng-click="viewConversation(teacherId, parent)">{{parent.father_name}}</a>
+        <a href="javascript:void(0)" class="text-subdued-frobels" ng-click="viewConversation(teacherId, parent)" style="text-decoration: underline; color: #387ef5;">{{parent.father_name}}</a>
         <i class="icon ion-person" style="position: absolute; right: 186px;" ui-sref="app.viewprofile({type: 'parent', personId: {{parent.parent_id}}})"></i>
         <span class="unread-highlighter" ng-if="showUnread(parent.parent_id)">.</span>
         <i class="icon icon-accessory ion-chevron-right"></i>
