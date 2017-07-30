@@ -31,7 +31,8 @@ angular.module('Forbels.services', [])
   this.login = function(requestParams) {
     var dataObj = {
       username: requestParams.username,
-      password: requestParams.password
+      password: requestParams.password,
+      token: requestParams.token
     }
     console.log(dataObj);
     var deferred = $q.defer();

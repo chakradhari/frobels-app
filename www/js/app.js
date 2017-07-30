@@ -9,6 +9,37 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
 .run(function($ionicPlatform, $ionicLoading, $rootScope) {
 
   $ionicPlatform.ready(function() {
+     //FCMPlugin.getToken( successCallback(token), errorCallback(err) ); 
+     //Keep in mind the function will return null if the token has not been established yet. 
+      FCMPlugin.getToken(
+        function(token){
+          console.log('Push Token: ' + token);
+          $rootScope.token = token;
+        },
+        function(err){
+          console.log('error retrieving token: ' + err);
+        }
+      )
+
+
+    FCMPlugin.onNotification(
+    function(data){
+    if(data.wasTapped){
+      //Notification was received on device tray and tapped by the user. 
+      alert( JSON.stringify(data) );
+    }else{
+      //Notification was received in foreground. Maybe the user needs to be notified. 
+      alert( JSON.stringify(data) );
+    }
+  },
+  function(msg){
+    console.log('onNotification callback successfully registered: ' + msg);
+  },
+  function(err){
+    console.log('Error registering onNotification callback: ' + err);
+  }
+);
+
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins.Keyboard) {
