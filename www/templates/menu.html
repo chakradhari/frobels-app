@@ -22,6 +22,11 @@
         <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="applyleave()">
           Leave Management
         </ion-item>
+
+        <ion-item menu-close ng-if="loginUser == 'admin'" ng-click="adminLeaveView()">
+          Leave Management
+        </ion-item>
+
         <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="timetableview()">
           Time Table
         </ion-item>

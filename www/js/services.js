@@ -352,11 +352,12 @@ angular.module('Forbels.services', [])
   }])
 
   .service('NotificationService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
-    this.notifications = function() {
+    this.notifications = function(requestParams) {
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: FrobelsApi + '/webservices/getNotifications.php'
+        url: FrobelsApi + '/webservices/getNotifications.php',
+        params: requestParams
       }).then(
         function(response) {
           deferred.resolve(response);
@@ -585,6 +586,62 @@ angular.module('Forbels.services', [])
       );
       return deferred.promise;
     };
+
+  }])
+
+  .service('AdminService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
+      this.createAssignment = function(requestParams) {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/createAnnouncement.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+          params: requestParams
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
+      this.getLeaveDetails = function() {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/getLeaveDetailsForAdmin.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
+      this.updateLeaveDetails = function(requestParams) {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/updateLeaveDetails.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+          params: requestParams
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
 
   }])
 
