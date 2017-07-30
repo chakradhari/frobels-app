@@ -126,7 +126,9 @@
 }
 
 /* Table design end*/
-
+.bold-text {
+  font-weight: bold;
+}
 
 .album-heading {
   border: bisque;
