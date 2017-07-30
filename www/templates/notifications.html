@@ -9,7 +9,16 @@
 
     <ion-list ng-show="notifications.length > 0">
       <ion-item class="item-text-wrap" ng-repeat="notification in notifications">
-        {{notification.message}}
+        <div class="row">
+          <div class="col-100 small-font-name-table" >
+            <span class="bold-text">Date: </span>{{notification.datetime}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-100 small-font-name-table">
+            <span class="bold-text">Message: </span>{{notification.message}}
+          </div>
+        </div>
       </ion-item>
     </ion-list>
   </ion-content>

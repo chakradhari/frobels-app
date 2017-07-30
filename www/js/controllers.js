@@ -776,7 +776,7 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ParentAssignmentController', ['$scope', '$stateParams', '$rootScope', 'AssignmentService', function($scope, $stateParams, $rootScope, AssignmentService) {
+.controller('ParentAssignmentController', ['$scope', '$stateParams', '$state', '$rootScope', 'AssignmentService', function($scope, $stateParams, $state, $rootScope, AssignmentService) {
   $scope.studentId = $stateParams.studentId;
 
   /* View Assignments for parent child*/
@@ -818,8 +818,10 @@ $scope.showProfile = function() {
 
   if(window.localStorage.getItem('login_type') == 'parent') {
     $scope.getAssigmentsForParent($scope.studentId);
-  } else {
+  } else if(window.localStorage.getItem('login_type') == 'teacher'){
     $scope.getAssigmentsForTeacher(JSON.parse(window.localStorage.getItem('loginDetails')).object_id);
+  } else {
+    $scope.getAssigmentsForTeacher($state.params.teacherId);
   }
 
 }])
@@ -1323,8 +1325,12 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ConversationViewController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+.controller('AdminAssignmentController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+    $scope.teacherListFilter = {
+      value: ""
+    };
 
+    $scope.teachersList = $state.params.teachers;
 
 }])
 

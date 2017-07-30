@@ -230,6 +230,9 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
         templateUrl: 'templates/parent-assignment-view.html',
         controller: 'ParentAssignmentController'
       }
+    },
+    params: {
+      teacherId: null
     }
   })
 
@@ -372,12 +375,12 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
-  .state('app.conversation', {
-    url: '/conversation',
+  .state('app.adminassignment', {
+    url: '/adminassignment',
     views: {
       'menuContent': {
-        templateUrl: 'templates/admin-conversation-view.html',
-        controller: 'ConversationViewController'
+        templateUrl: 'templates/admin-assignment-view.html',
+        controller: 'AdminAssignmentController'
       }
     },
     params: {
