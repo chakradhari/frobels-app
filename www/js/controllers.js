@@ -60,12 +60,17 @@ $scope.showProfile = function() {
 
   $scope.doLogin = function() {
     console.log("Entered")
+     
+    $scope.loginData.token = $rootScope.token;
+               
+
     LoginService.login($scope.loginData).then(
       function(result) {
         if(result.data.error) {
           // alert(result.data.error + 'line 55');
           $cordovaToast.showShortTop(result.data.error).then(
             function(success) {
+
 
             },
             function(error) {
@@ -78,6 +83,7 @@ $scope.showProfile = function() {
           if(result.data.newMessages > 0) {
             $rootScope.messageCount = result.data.newMessages;
           }
+          
           window.localStorage.setItem('oauth', result.data.userdetails.oauth);
           $rootScope.loginDetails = result.data.userdetails;
           $rootScope.login_type = result.data.userdetails.login_type;
