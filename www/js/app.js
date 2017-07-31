@@ -9,8 +9,8 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
 .run(function($ionicPlatform, $ionicLoading, $rootScope) {
 
   $ionicPlatform.ready(function() {
-     //FCMPlugin.getToken( successCallback(token), errorCallback(err) ); 
-     //Keep in mind the function will return null if the token has not been established yet. 
+     //FCMPlugin.getToken( successCallback(token), errorCallback(err) );
+     //Keep in mind the function will return null if the token has not been established yet.
       FCMPlugin.getToken(
         function(token){
           console.log('Push Token: ' + token);
@@ -25,11 +25,11 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     FCMPlugin.onNotification(
     function(data){
     if(data.wasTapped){
-      //Notification was received on device tray and tapped by the user. 
+      //Notification was received on device tray and tapped by the user.
       //alert( JSON.stringify(data) );
       console.log(JSON.stringify(data));
     }else{
-      //Notification was received in foreground. Maybe the user needs to be notified. 
+      //Notification was received in foreground. Maybe the user needs to be notified.
       //alert( JSON.stringify(data) );
       console.log(JSON.stringify(data));
     }
@@ -351,16 +351,6 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     }
   })
 
-     .state('app.adminresults', {
-    url: '/adminresults',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/admin-announcement-view.html',
-        controller: 'AdminAnnoucmentsController'
-      }
-    }
-  })
-
   .state('app.adminleavemanagement', {
     url: '/adminleavemanagement',
     views: {
@@ -407,6 +397,26 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     },
     params: {
       teachers: null
+    }
+  })
+
+  .state('app.adminresults', {
+    url: '/adminresults',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-result-view.html',
+        controller: 'AdminResultController'
+      }
+    }
+  })
+
+  .state('app.adminfees', {
+    url: '/adminfees',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-feedetails-view.html',
+        controller: 'AdminFeeDetailsController'
+      }
     }
   })
 

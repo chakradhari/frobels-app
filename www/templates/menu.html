@@ -27,6 +27,10 @@
           Leave Management
         </ion-item>
 
+        <ion-item menu-close ng-if="loginUser == 'admin'" ng-click="feeView()">
+          Fee Details
+        </ion-item>
+
         <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="timetableview()">
           Time Table
         </ion-item>

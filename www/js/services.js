@@ -590,6 +590,43 @@ angular.module('Forbels.services', [])
   }])
 
   .service('AdminService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
+
+      this.getMarksForAdmin = function(requestParams) {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/getClassMarksForAdmin.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+          params: requestParams
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
+      this.feeDetails = function(requestParams) {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/getClassFeeForAdmin.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+          params: requestParams
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
       this.createAssignment = function(requestParams) {
         var deferred = $q.defer();
         $http({

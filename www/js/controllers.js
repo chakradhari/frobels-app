@@ -29,7 +29,11 @@ $scope.applyleave = function() {
 };
 
 $scope.adminLeaveView = function() {
-  $state.go('app.adminleavemanagement')
+  $state.go('app.adminleavemanagement');
+}
+
+$scope.feeView = function() {
+  $state.go('app.adminfees');
 }
 
 $scope.feeDetails = function() {
@@ -60,9 +64,9 @@ $scope.showProfile = function() {
 
   $scope.doLogin = function() {
     console.log("Entered")
-     
+
     $scope.loginData.token = $rootScope.token;
-               
+
 
     LoginService.login($scope.loginData).then(
       function(result) {
@@ -83,7 +87,7 @@ $scope.showProfile = function() {
           if(result.data.newMessages > 0) {
             $rootScope.messageCount = result.data.newMessages;
           }
-          
+
           window.localStorage.setItem('oauth', result.data.userdetails.oauth);
           $rootScope.loginDetails = result.data.userdetails;
           $rootScope.login_type = result.data.userdetails.login_type;
@@ -899,6 +903,7 @@ $scope.showProfile = function() {
     value: '',
     session: ''
   };
+
   $scope.showForms = {
     classSelectForm : true,
     studentsDisplayForm: false
@@ -1277,7 +1282,7 @@ $scope.showProfile = function() {
         $rootScope.$broadcast('loading:hide');
       })
   }
-  
+
 }])
 
 .controller('LeaveManagementController', ["$scope", "$rootScope", "AdminService", function($scope, $rootScope, AdminService) {
@@ -1368,6 +1373,105 @@ $scope.showProfile = function() {
     $scope.teachersList = $state.params.teachers;
 
 }])
+
+.controller('AdminResultController', ["$scope", "$rootScope", "$state", "AdminService", "AssignmentService", function($scope, $rootScope, $state, AdminService, AssignmentService) {
+
+  $scope.seletecdClass = {
+    value: ''
+  };
+
+  $scope.marksdiv = {
+    display: false
+  };
+
+  $scope.getListOfClassesAndSubjects = function() {
+    $rootScope.$broadcast('loading:show');
+    AssignmentService.getListOfClassesAndSubjcts().then(
+      function(response) {
+        $scope.classes = response.data.classes;
+        $rootScope.$broadcast('loading:hide');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  }
+
+  $scope.getListOfClassesAndSubjects();
+
+  $scope.getMarks = function(selectedClass) {
+    console.log(selectedClass);
+    var requestParams = {
+      class_id: selectedClass.value.class_id
+    };
+    AdminService.getMarksForAdmin(requestParams).then(
+      function(response) {
+        console.log(response);
+        $scope.classAverage = response.data.class_avg;
+        $scope.studentMarks = response.data.student_marks;
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+
+  };
+
+}])
+
+.controller('AdminFeeDetailsController', ["$scope", "$rootScope", "$state", "AdminService", "AssignmentService", function($scope, $rootScope, $state, AdminService, AssignmentService) {
+
+  $scope.seletecdClass = {
+    value: ''
+  };
+
+  $scope.feeview = {
+    display: false
+  };
+
+  $scope.getListOfClassesAndSubjects = function() {
+    $rootScope.$broadcast('loading:show');
+    AssignmentService.getListOfClassesAndSubjcts().then(
+      function(response) {
+        $scope.classes = response.data.classes;
+        $rootScope.$broadcast('loading:hide');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  };
+
+  $scope.getListOfClassesAndSubjects();
+
+  $scope.getFeeDetails = function(selectedClass) {
+    console.log(selectedClass);
+    var requestParams = {
+      class_id: selectedClass.value.class_id
+    };
+
+    $rootScope.$broadcast('loading:show');
+    AdminService.feeDetails(requestParams).then(
+      function(response) {
+        console.log(response);
+        $scope.feeview.display = true;
+        $scope.feeData = response.data.class_fee;
+        $rootScope.$broadcast('loading:hide');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+
+  };
+
+}])
+
+
+
 
 /*
 ,
