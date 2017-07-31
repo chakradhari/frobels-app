@@ -625,6 +625,42 @@ angular.module('Forbels.services', [])
         return deferred.promise;
       };
 
+      this.getAttendanceForAdmin = function(requestParams) {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/getClassAttendanceForAdmin.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+          params: requestParams
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
+      this.getClassMarksForAdmin = function() {
+        var deferred = $q.defer();
+        $http({
+          method: 'GET',
+          url: FrobelsApi + '/webservices/getClassMarksForAdmin.php',
+          // http://www.frobelsedu.com/webservices/createAnnouncement.php
+        }).then(
+          function(response) {
+            deferred.resolve(response);
+          },
+          function(error) {
+            deferred.reject(error);
+          }
+        );
+        return deferred.promise;
+      };
+
+
       this.updateLeaveDetails = function(requestParams) {
         var deferred = $q.defer();
         $http({

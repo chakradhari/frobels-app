@@ -340,7 +340,7 @@ $scope.showProfile = function() {
 .controller('ExamController', ["$scope", "$state", function($scope, $state) {
   $scope.marks = $state.params.data.submarks;
   $scope.exam_name = $state.params.data.exam_name;
-  $scope.total = $state.params.data.totalDetails.total;
+  $scope.total = $state.params.data.totalDetails;
 }])
 
 .controller('ImageGalleryController', ["$scope", "$state", "$rootScope", "ImageGalleryService", function($scope, $state, $rootScope, ImageGalleryService) {
@@ -1243,6 +1243,41 @@ $scope.showProfile = function() {
     )
   };
 
+}])
+
+.controller('AdminAttendanceController',["$scope", "$rootScope", "AdminService", "AssignmentService", function($scope, $rootScope, AdminService, AssignmentService){
+  $rootScope.$broadcast('loading:show');
+  $scope.attendanceDetails = [];
+  $scope.resultsText = false;
+  AssignmentService.getListOfClassesAndSubjcts().then(
+      function(response) {
+        $scope.classes = response.data.classes;
+        $rootScope.$broadcast('loading:hide');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  $scope.getAdminAttendance = function(selectedClass,applyObj){
+    var requestParams = {
+      class_id: selectedClass.value.class_id,
+      date: applyObj.to
+    };
+        AdminService.getAttendanceForAdmin(requestParams).then(
+        function(response) {
+        console.log(response);
+        $scope.attendanceDetails = response.data.class_att;
+        $scope.resultsText = true;
+        $rootScope.$broadcast('loading:hide');
+
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      })
+  }
+  
 }])
 
 .controller('LeaveManagementController', ["$scope", "$rootScope", "AdminService", function($scope, $rootScope, AdminService) {
