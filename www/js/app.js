@@ -26,10 +26,12 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
     function(data){
     if(data.wasTapped){
       //Notification was received on device tray and tapped by the user. 
-      alert( JSON.stringify(data) );
+      //alert( JSON.stringify(data) );
+      console.log(JSON.stringify(data));
     }else{
       //Notification was received in foreground. Maybe the user needs to be notified. 
-      alert( JSON.stringify(data) );
+      //alert( JSON.stringify(data) );
+      console.log(JSON.stringify(data));
     }
   },
   function(msg){
@@ -331,6 +333,26 @@ angular.module('Forbels', ['ionic', 'ngCordova', 'Forbels.controllers', 'Forbels
 
   .state('app.adminannouncements', {
     url: '/adminannouncements',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-announcement-view.html',
+        controller: 'AdminAnnoucmentsController'
+      }
+    }
+  })
+
+   .state('app.adminattendance', {
+    url: '/adminattendance',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/admin-attendance-view.html',
+        controller: 'AdminAttendanceController'
+      }
+    }
+  })
+
+     .state('app.adminresults', {
+    url: '/adminresults',
     views: {
       'menuContent': {
         templateUrl: 'templates/admin-announcement-view.html',
