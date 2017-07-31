@@ -28,6 +28,10 @@ $scope.applyleave = function() {
   $state.go('app.teacherapplyleave');
 };
 
+$scope.adminLeaveView = function() {
+  $state.go('app.adminleavemanagement')
+}
+
 $scope.feeDetails = function() {
   $state.go('app.feedetails');
 }
@@ -56,12 +60,17 @@ $scope.showProfile = function() {
 
   $scope.doLogin = function() {
     console.log("Entered")
+
+    $scope.loginData.token = $rootScope.token;
+
+
     LoginService.login($scope.loginData).then(
       function(result) {
         if(result.data.error) {
           // alert(result.data.error + 'line 55');
           $cordovaToast.showShortTop(result.data.error).then(
             function(success) {
+
 
             },
             function(error) {
@@ -74,6 +83,7 @@ $scope.showProfile = function() {
           if(result.data.newMessages > 0) {
             $rootScope.messageCount = result.data.newMessages;
           }
+
           window.localStorage.setItem('oauth', result.data.userdetails.oauth);
           $rootScope.loginDetails = result.data.userdetails;
           $rootScope.login_type = result.data.userdetails.login_type;
@@ -475,18 +485,29 @@ $scope.showProfile = function() {
 /* For sending message. Both for parent and teacher same controller is utilized */
 .controller('MessageController', ["$scope", "$state", "$stateParams", "$rootScope", "MessageService", "ChatService", function($scope, $state, $stateParams, $rootScope, MessageService, ChatService) {
   $scope.userData = $state.params.memberData;
-  $scope.teacherIdForAdmin = $state.params.teacherId;
+  if($state.params.teacherId) {
+    $scope.teacherId = $state.params.teacherId;
+  }
+
+  $scope.footer = {
+    view: true
+  };
+
+  console.log($scope.teacherId);
   console.log($scope.userData);
   console.log($rootScope.loginDetails);
-  $scope.loginDetails = $rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails'));
+  $scope.loginDetails = angular.copy($rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails')));
   $scope.data = {};
   if($scope.loginDetails) {
-    if(!$scope.loginDetails.login_type == 'admin' && $scope.loginDetails.object_id) {
+    if($scope.loginDetails.login_type !== 'admin' && $scope.loginDetails.object_id) {
       $scope.myId = $scope.loginDetails.object_id;
       $scope.myType = $scope.loginDetails.login_type;
     } else {
-      $scope.myId = $scope.teacherIdForAdmin;
+      $scope.myId = $scope.teacherId;
       $scope.myType = 'teacher';
+      $scope.loginDetails.object_id = $scope.myId;
+      $scope.loginDetails.login_type = $scope.myType;
+      $scope.footer.view = false;
     }
   }
 
@@ -524,19 +545,10 @@ $scope.showProfile = function() {
     )
   };
 
-  var getChatRequestParams = {};
-
-  if($scope.loginDetails.login_type == 'admin') {
-    getChatRequestParams = {
-      object_id: $scope.teacherIdForAdmin,
-      type: 'teacher'
-    }
-  } else {
-    getChatRequestParams = {
-      object_id: $scope.loginDetails.object_id,
-      type: $scope.loginDetails.login_type
-    }
-  }
+  var getChatRequestParams = {
+    object_id: $scope.loginDetails.object_id,
+    type: $scope.loginDetails.login_type
+  };
 
   $scope.getChat = function(getChatRequestParams) {
     $rootScope.$broadcast('loading:show');
@@ -764,7 +776,7 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ParentAssignmentController', ['$scope', '$stateParams', '$rootScope', 'AssignmentService', function($scope, $stateParams, $rootScope, AssignmentService) {
+.controller('ParentAssignmentController', ['$scope', '$stateParams', '$state', '$rootScope', 'AssignmentService', function($scope, $stateParams, $state, $rootScope, AssignmentService) {
   $scope.studentId = $stateParams.studentId;
 
   /* View Assignments for parent child*/
@@ -806,8 +818,10 @@ $scope.showProfile = function() {
 
   if(window.localStorage.getItem('login_type') == 'parent') {
     $scope.getAssigmentsForParent($scope.studentId);
-  } else {
+  } else if(window.localStorage.getItem('login_type') == 'teacher'){
     $scope.getAssigmentsForTeacher(JSON.parse(window.localStorage.getItem('loginDetails')).object_id);
+  } else {
+    $scope.getAssigmentsForTeacher($state.params.teacherId);
   }
 
 }])
@@ -1189,15 +1203,45 @@ $scope.showProfile = function() {
   $scope.feeDetails();
 }])
 
-.controller('AdminAssignmentController', ["$scope", "AdminService", function($scope, AdminService) {
-  $scope.assignment = {
-
-  };
+.controller('AdminAnnoucmentsController', ["$scope", "$rootScope", "$state", "$cordovaToast", "AdminService", function($scope, $rootScope, $state, $cordovaToast, AdminService) {
+  $scope.assignment = {};
 
   $scope.createAnnouncement = function(assignment) {
+    $rootScope.$broadcast('loading:show');
     console.log(assignment);
-  }
 
+    var requestParams = {
+      note_from: assignment.from,
+      note_sub: assignment.subject,
+      msg: assignment.message,
+      date: assignment.date,
+      note_to: assignment.to
+    }
+
+    AdminService.createAssignment(requestParams).then(
+      function(response) {
+        console.log(response);
+        $rootScope.$broadcast('loading:hide');
+        $scope.assignment = {};
+        /*
+        $cordovaToast.showShortTop(response.data.response).then(
+          function(success) {
+            $state.go('app.dashboard');
+          },
+          function(error) {
+            console.log(error);
+          }
+        )
+        */
+
+        $state.go('app.dashboard');
+      },
+      function(error) {
+        console.log(error);
+        $rootScope.$broadcast('loading:hide');
+      }
+    )
+  };
 
 }])
 
@@ -1207,7 +1251,9 @@ $scope.showProfile = function() {
     AdminService.getLeaveDetails().then(
       function(response) {
         console.log(response);
+        $scope.leaveDetails = response.data.leaveDetails;
         $rootScope.$broadcast('loading:hide');
+
       },
       function(error) {
         console.log(error);
@@ -1217,6 +1263,26 @@ $scope.showProfile = function() {
   }
 
   $scope.getLeaveDetails();
+
+  $scope.updateDetails = function(id, status) {
+    console.log(`${id}, ${status}`);
+    var requestParams = {
+      leave_id: id,
+      status: status
+    };
+
+    $rootScope.$broadcast('loading:show');
+    AdminService.updateLeaveDetails(requestParams).then(
+      function(response) {
+        $rootScope.$broadcast('loading:hide');
+        $scope.getLeaveDetails();
+      },
+      function(error) {
+        $rootScope.$broadcast('loading:hide');
+        console.log(error);
+      }
+    )
+  };
 
 
 }])
@@ -1259,9 +1325,12 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('ConversationViewController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+.controller('AdminAssignmentController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
+    $scope.teacherListFilter = {
+      value: ""
+    };
 
-
+    $scope.teachersList = $state.params.teachers;
 
 }])
 
