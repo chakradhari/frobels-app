@@ -16,7 +16,7 @@
     </ion-header-bar>
     <ion-content>
       <ion-list>
-        <ion-item menu-close ng-click="showProfile()">
+        <ion-item menu-close ng-if="loginUser != 'admin'" ng-click="showProfile()">
           View Profile
         </ion-item>
         <ion-item menu-close ng-if="loginUser == 'teacher'" ng-click="applyleave()">

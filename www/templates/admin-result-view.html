@@ -21,12 +21,31 @@
       <div class="card" ng-if="$scope.studentMarks.length == 0">
         No Details to show.
       </div>
-      <div class="card">
-        Your Code goes here.
-        You have to use these two fields (angular scope variables)
-        $scope.classAverage;
-        $scope.studentMarks;
-        </fieldset>
+      <div class="card" ng-repeat="record in studentMarks">
+        <div class="padding">
+          <div class="row" style="font-weight: bold">
+            <div class="col col-50">Subject</div>
+            <div class="col col-50">Subject average</div>
+            <!--<div class="col col-25">Grade</div>-->
+          </div>
+          <div >
+            <div ng-repeat= "data in record" class="row">
+              <div class="col col-50">{{data.subject_name}}</div>
+              <div class="col col-50">{{data.avg}}</div>
+              <!--<div class="col col-25">{{record.subject_grade}}</div>-->
+            </div>
+            <div>
+              <div class="row">
+                <div class="col col-50">Class average</div>
+                <div class="col col-50">{{classAverage[$index]}}</div>
+              </div>
+               <div class="row">
+                <div class="col col-50">Exam</div>
+                <div class="col col-50">{{examname[$index]}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </ion-content>

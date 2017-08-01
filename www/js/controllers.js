@@ -1410,6 +1410,8 @@ $scope.showProfile = function() {
         console.log(response);
         $scope.classAverage = response.data.class_avg;
         $scope.studentMarks = response.data.student_marks;
+          $scope.examname = response.data.exam_names;
+        $scope.marksdiv.display =true;
       },
       function(error) {
         console.log(error);
