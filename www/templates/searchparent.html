@@ -2,9 +2,10 @@
   <ion-content class="padding">
     <form name="searchParentForm">
       <div class="list list-inset">
+       <p>Search using Student Admission number</p>
         <label class="item item-input">
           <i class="icon ion-search placeholder-icon"></i>
-          <input type="text" placeholder="Search" ng-model="search.admNo" required />
+          <input type="text" placeholder="Admission number" ng-model="search.admNo" required />
         </label>
       </div>
       <button class="button button-block button-positive" ng-disabled="searchParentForm.$invalid" ng-click="searchParent(search.admNo)">
@@ -14,7 +15,11 @@
     <hr />
     <div class="card" ng-if="showDetails == 'show'" style="padding: 10px;">
         <p>Parent Name: {{parentDetails.father_name}}</p>
-        <p>Phone Number: <a ng-href="tel:{{parentDetails.father_mobile_num}}">{{parentDetails.father_mobile_num}}</a></p>
+         <p>Student Name: {{parentDetails.student_first_name}}</p>
+         <p>Date of Birth: {{parentDetails.DOB}}</p>
+         <p>Class: {{parentDetails.class_name}}-{{parentDetails.section}}</p>
+        <p>Parent Phone: <a ng-href="tel:{{parentDetails.father_mobile_num}}">{{parentDetails.father_mobile_num}}</a></p>
+        <p>Chat with <a style="text-decoration: underline; color: #387ef5;" href="javascript:void(0)" ng-click="textParent()">{{parentDetails.father_name}}</a></p>
 
     </div>
     <div class="card" ng-if="showDetails == 'error'" style="padding: 10px;">

@@ -1,5 +1,5 @@
 <ion-view view-title="Notifications">
-  <ion-content class="padding">
+  <ion-content style = "top:40px; padding:5px;" class = "padding">
 
     <div ng-show="notifications.length == 0">
       <div class="card no-data-card">
@@ -8,10 +8,15 @@
     </div>
 
     <ion-list ng-show="notifications.length > 0">
-      <ion-item class="item-text-wrap" ng-repeat="notification in notifications">
+      <ion-item style = "padding: 5px;" class="item-text-wrap" ng-repeat="notification in notifications">
         <div class="row">
           <div class="col-100 small-font-name-table" >
             <span class="bold-text">Date: </span>{{notification.datetime}}
+          </div>
+        </div>
+         <div class="row">
+          <div class="col-100 small-font-name-table">
+            <span class="bold-text">From: </span>{{notification.note_from}}
           </div>
         </div>
         <div class="row">

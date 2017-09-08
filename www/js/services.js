@@ -251,10 +251,11 @@ angular.module('Forbels.services', [])
   }])
 
   .service('ChatService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
-    this.getTeachersList = function(studentId) {
+    this.getTeachersList = function(studentId, parentId) {
       var deferred = $q.defer();
       var requestParams = {
-        student_id: studentId
+        student_id: studentId,
+        parent_id : parentId
       };
       $http({
         method: 'GET',
@@ -275,7 +276,8 @@ angular.module('Forbels.services', [])
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: FrobelsApi + '/webservices/getChat.php',
+          url: FrobelsApi + '/webservices/getChat.php',
+          //url: 'http://localhost/getChat.php',
         params: requestParams
       }).then(
         function(response) {
@@ -375,7 +377,8 @@ angular.module('Forbels.services', [])
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: FrobelsApi + '/webservices/sendMessage.php',
+       url: FrobelsApi + '/webservices/sendMessage.php',
+       // url: 'http://localhost/sendMessage.php',
         params: requestParams
       }).then(
         function(response) {
@@ -391,14 +394,16 @@ angular.module('Forbels.services', [])
 
 
   .service('TeacherService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
-    this.parentListForTeacher = function(teacherId) {
+    this.parentListForTeacher = function(teacherId,login_type) {
       var deferred = $q.defer();
       var requestParams = {
-        teacher_id: teacherId
+        teacher_id: teacherId,
+        login_type:login_type
       };
       $http({
         method: 'GET',
         url: FrobelsApi + '/webservices/getChatMembersForTeacher.php',
+        //url: 'http://localhost/getChatMembersForTeacher.php',
         params: requestParams
       }).then(
         function(response) {
@@ -490,10 +495,11 @@ angular.module('Forbels.services', [])
   }])
 
   .service('ProfileService', ["$q", "$http", "FrobelsApi", function($q, $http, FrobelsApi) {
-    this.viewProfileForStudent = function(studentId) {
+    this.viewProfileForStudent = function(studentId, parentId) {
       var deferred = $q.defer();
       var requestParams = {
-        studentId: studentId
+        studentId: studentId,
+        parent_id: parentId
       };
       $http({
         method: 'GET',

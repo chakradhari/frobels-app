@@ -8,17 +8,17 @@
     <div ng-if="timetableData.length > 0">
       <div class="list">
         <div class="item item-divider">
-          <div class="row" style="margin-left: -16px;">
-            <div class="col col-33">Period</div>
+          <div class="row" ">
+           <div class="col col-33">Date</div>
             <div class="col col-33">Class</div>
-            <div class="col col-33">Subject</div>
+            <div class="col col-33">Period</div>
           </div>
         </div>
         <div class="item" ng-repeat="data in timetableData">
           <div class="row">
-            <div class="col col-33">{{data.period}}</div>
-            <div class="col col-33 small-font-name">{{data.class_name}}</div>
-            <div class="col col-33 small-font-name">{{data.subject_name}}</div>
+            <div class="col col-33">{{data.date | date}}</div>
+            <div class="col col-33">{{data.class_name}}-{{data.section}}</div>
+            <div class="col col-33">{{data.period}}</div> 
           </div>
         </div>
       </div>

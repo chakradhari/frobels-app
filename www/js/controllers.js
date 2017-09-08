@@ -210,7 +210,7 @@ $scope.showProfile = function() {
 
 /* Landing page for both parent and teacher */
 
-.controller('DashboradController', ["$scope", "$state", "$ionicPopup", "$rootScope", "dashBoradService", function($scope, $state, $ionicPopup, $rootScope, dashBoradService) {
+.controller('DashboradController', ["$scope", "$state", "$ionicPopup", "$rootScope", "dashBoradService", "$ionicScrollDelegate", function($scope, $state, $ionicPopup, $rootScope, dashBoradService, $ionicScrollDelegate) {
   console.log($state.params.childDetails);
   // $scope.childDetails = $state.params.childDetails;
   $scope.teachersList = [];
@@ -398,9 +398,9 @@ $scope.showProfile = function() {
   var studentId = $stateParams.studentId;
   console.log(studentId);
   $scope.loginDetails = $rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails'));
-  $scope.getTechersList = function(studentId) {
+  $scope.getTechersList = function(studentId, parentId) {
     $rootScope.$broadcast('loading:show');
-    ChatService.getTeachersList(studentId).then(
+    ChatService.getTeachersList(studentId, parentId).then(
       function(response) {
         $scope.teachersData = response.data.chat_members;
         angular.forEach($scope.teachersData, function(subjectwiseInfo, key) {
@@ -443,7 +443,7 @@ $scope.showProfile = function() {
       function(response) {
         console.log(response);
         $scope.chatHistoryList = response.data.chats;
-        $scope.getTechersList(studentId);
+        $scope.getTechersList(studentId, $scope.loginDetails.object_id);
       },
       function(error) {
         console.log(error);
@@ -458,6 +458,10 @@ $scope.showProfile = function() {
    Same is present in TeacherController Controller
   */
   $scope.showUnread = function(index) {
+
+    if ($scope.chatHistoryList == undefined){
+      return '';
+    }
     var chatListForTeacher = $scope.chatHistoryList.filter(function(value) {
       return (value.message_to ==  index) || (value.message_from ==  index);
     });
@@ -487,7 +491,7 @@ $scope.showProfile = function() {
 }])
 
 /* For sending message. Both for parent and teacher same controller is utilized */
-.controller('MessageController', ["$scope", "$state", "$stateParams", "$rootScope", "MessageService", "ChatService", function($scope, $state, $stateParams, $rootScope, MessageService, ChatService) {
+.controller('MessageController', ["$scope", "$state", "$stateParams", "$rootScope", "MessageService", "ChatService", "$ionicScrollDelegate", "$timeout", "$interval", function($scope, $state, $stateParams, $rootScope, MessageService, ChatService, $ionicScrollDelegate, $timeout, $interval) {
   $scope.userData = $state.params.memberData;
   if($state.params.teacherId) {
     $scope.teacherId = $state.params.teacherId;
@@ -506,12 +510,17 @@ $scope.showProfile = function() {
     if($scope.loginDetails.login_type !== 'admin' && $scope.loginDetails.object_id) {
       $scope.myId = $scope.loginDetails.object_id;
       $scope.myType = $scope.loginDetails.login_type;
-    } else {
+    } else if($scope.loginDetails.login_type == 'admin'){
+      $scope.myId = $scope.loginDetails.iAdminId;
+      $scope.myType = $scope.loginDetails.login_type;
+      $scope.loginDetails.object_id = $scope.myId;
+    }
+    else {
       $scope.myId = $scope.teacherId;
       $scope.myType = 'teacher';
       $scope.loginDetails.object_id = $scope.myId;
       $scope.loginDetails.login_type = $scope.myType;
-      $scope.footer.view = false;
+      $scope.footer.view = true;
     }
   }
 
@@ -527,7 +536,8 @@ $scope.showProfile = function() {
       from_type: $scope.loginDetails.login_type,
       to_id: $scope.userData.emp_id || $scope.userData.parent_id,
       description: $scope.data.message,
-      subject: $scope.userData.subject_name || $scope.subjectForTeacher
+      subject: "Chat" || $scope.subjectForTeacher,
+      type: $scope.userData.type
     };
 
     $scope.messages.push({
@@ -547,11 +557,15 @@ $scope.showProfile = function() {
         console.log("Error send message");
       }
     )
+      $ionicScrollDelegate.scrollBottom(true);
   };
+console.log("object_id", $scope.userData);
 
   var getChatRequestParams = {
-    object_id: $scope.loginDetails.object_id,
-    type: $scope.loginDetails.login_type
+    object_id: $scope.userData.object_id || $scope.loginDetails.object_id,
+    type: $scope.loginDetails.login_type,
+    to_id: $scope.userData.emp_id || $scope.userData.parent_id,
+    msg_to: $scope.userData.type
   };
 
   $scope.getChat = function(getChatRequestParams) {
@@ -568,7 +582,23 @@ $scope.showProfile = function() {
         $rootScope.$broadcast('loading:hide');
       }
     )
+    $ionicScrollDelegate.scrollBottom(true);
   };
+
+
+ $interval(function(){
+  ChatService.getChat(getChatRequestParams).then(
+      function(response) {
+        console.log(response);
+        $scope.chatHistoryList = response.data.chats;
+        $scope.addMessagesOfChatHistory();
+      },
+      function(error) {
+        console.log(error);
+      }
+    )
+    //$ionicScrollDelegate.scrollBottom(true);
+ }, 5000);
 
   /* For updating message read. Once chat is studied then inorder update history this function is used.*/
   $scope.updateMessageRead = function(updateMessageString) {
@@ -586,12 +616,13 @@ $scope.showProfile = function() {
           console.log(error);
         }
       );
-
+      $ionicScrollDelegate.scrollBottom(true);
   };
 
   /* Adding messages to chat history */
   $scope.addMessagesOfChatHistory = function() {
       var updateMessageString = "";
+        $scope.messages = [];
       /*
       if($scope.loginDetails.object_id == ($scope.userData.emp_id || $scope.userData.parent_id)) {
         $scope.myId = $scope.loginDetails.object_id + 'A';
@@ -613,7 +644,8 @@ $scope.showProfile = function() {
             text: value.message_description,
             id: value.message_from,
             type: value.message_to_type,
-            newM: false
+            newM: false,
+            datetime: value.datetime
           });
           $scope.subjectForTeacher = value.message_subject;
           if(value.message_read == '0') {
@@ -631,6 +663,10 @@ $scope.showProfile = function() {
   $scope.getChat(getChatRequestParams);
 
   $scope.messages = [];
+
+    $timeout(function() {
+      $ionicScrollDelegate.scrollBottom(true);
+    }, 1000);
 
 }])
 
@@ -665,7 +701,7 @@ $scope.showProfile = function() {
   console.log($scope.imageUrl);
 }])
 
-.controller('TeacherController', ["$scope", "$state", "$rootScope", "FrobelsApi", "TeacherService", "ChatService", function($scope, $state, $rootScope, FrobelsApi, TeacherService, ChatService) {
+.controller('TeacherController', ["$scope", "$state", "$rootScope", "FrobelsApi", "TeacherService", "ChatService", "$ionicScrollDelegate", function($scope, $state, $rootScope, FrobelsApi, TeacherService, ChatService, $ionicScrollDelegate) {
     var teacherId = $state.params.teacherId || JSON.parse(window.localStorage.getItem('loginDetails')).object_id;
     $scope.loginDetails = $rootScope.loginDetails || JSON.parse(window.localStorage.getItem('loginDetails'));
     $scope.getParentList = function(teacherId) {
@@ -689,7 +725,8 @@ $scope.showProfile = function() {
 
     var getChatRequestParams = {
       object_id: $scope.loginDetails.object_id,
-      type: $scope.loginDetails.login_type
+      type: $scope.loginDetails.login_type,
+      to_id: teacherId
     };
 
     $scope.getChat = function(getChatRequestParams) {
@@ -755,9 +792,9 @@ $scope.showProfile = function() {
     )
   };
 
-  $scope.getStudentProfile = function(studentId) {
+  $scope.getStudentProfile = function(studentId, parentId) {
     $rootScope.$broadcast('loading:show');
-    ProfileService.viewProfileForStudent(studentId).then(
+    ProfileService.viewProfileForStudent(studentId, parentId).then(
       function(response) {
         console.log(response);
         $scope.data = response.data[0];
@@ -773,7 +810,9 @@ $scope.showProfile = function() {
   if($scope.type) {
       if($scope.type == 'teacher') {
         $scope.getTeacherProfile($scope.personId);
-      } else {
+      } else if($scope.type == 'parentType') {
+        $scope.getStudentProfile($scope.personId , $scope.personId);
+      } else{
         $scope.getStudentProfile($scope.personId)
       }
   }
@@ -852,7 +891,8 @@ $scope.showProfile = function() {
       classId: selectedItem.class.class_id,
       teacherId: JSON.parse(window.localStorage.getItem('loginDetails')).object_id,
       subjectId: selectedItem.subject.subject_id,
-      message: selectedItem.message
+      message: selectedItem.message,
+      date : new Date()
     };
 
     AssignmentService.createAssignments(requestParams).then(
@@ -908,6 +948,7 @@ $scope.showProfile = function() {
     classSelectForm : true,
     studentsDisplayForm: false
   };
+ $scope.date = new Date();
 
   $scope.attendiesList = [];
   // $scope.attendiesList1 = [];
@@ -966,7 +1007,7 @@ $scope.showProfile = function() {
   };
 
   $scope.showResults = function(list) {
-
+    $rootScope.$broadcast('loading:show');
     var attendiesStatus = [];
 
     for(var i=0; i<Object.keys(list).length; i++) {
@@ -1002,6 +1043,7 @@ $scope.showProfile = function() {
 
     console.log(`Absenties : ${absenties}, Presenties : ${presenties}, session: ${$scope.currentSession}, teacherId: ${JSON.parse(window.localStorage.getItem('loginDetails')).object_id}`);
     $scope.submitAttendance($scope.insertOrUpdateAttendance, absenties, presenties, $scope.currentSession, JSON.parse(window.localStorage.getItem('loginDetails')).object_id);
+    $rootScope.$broadcast('loading:hide');
   };
 
   $scope.submitAttendance = function(type, a, p, s, t_id) {
@@ -1040,7 +1082,7 @@ $scope.showProfile = function() {
         function(response) {
           if(response) {
             $rootScope.$broadcast('loading:hide');
-            $cordovaToast.showLongTop("Attendance updated successfully").then(
+            $cordovaToast.showLongTop("Attendance Submitted successfully").then(
               function(success) {
                 $state.go('app.dashboard');
               },
@@ -1081,7 +1123,7 @@ $scope.showProfile = function() {
 
 }])
 
-.controller('SearchParentController', ["$scope", '$rootScope', "TeacherService", function($scope, $rootScope, TeacherService) {
+.controller('SearchParentController', ["$scope", '$rootScope', "TeacherService", "$state",function($scope, $rootScope, TeacherService,$state) {
   $scope.showDetails = false;
   $scope.searchParent = function(admNo) {
     $rootScope.$broadcast('loading:show');
@@ -1103,7 +1145,9 @@ $scope.showProfile = function() {
       }
     )
   };
-
+   $scope.textParent = function() {
+      $state.go('app.message', {memberData: $scope.parentDetails});
+    };
 }])
 
 .controller('TimeTableController', ["$scope", "$rootScope", "TeacherService", function($scope, $rootScope, TeacherService) {
@@ -1324,7 +1368,6 @@ $scope.showProfile = function() {
     )
   };
 
-
 }])
 
 .controller('AdminChatController', ["$scope", "$rootScope", "$state", "AdminService", function($scope, $rootScope, $state, AdminService) {
@@ -1333,16 +1376,27 @@ $scope.showProfile = function() {
   };
 
   $scope.teachersList = $state.params.teachers;
+  var loginDetails = JSON.parse(window.localStorage.loginDetails);
 
+   $scope.textTeacher = function(emp) {
+    console.log("loginDetails" , " " , loginDetails);
+
+    var memberData = {
+      emp_id: emp.emp_id,
+      object_id: loginDetails.iAdminId,
+      login_type: loginDetails.login_type 
+    };
+    $state.go('app.message', {memberData: memberData});
+  };
 
 }])
 
 .controller('AdminParentListViewController', ["$scope", "$rootScope", "$stateParams", "$state", "TeacherService", function($scope, $rootScope, $stateParams, $state, TeacherService) {
   $scope.teacherId = $stateParams.teacherId;
-
-  $scope.getParentsList = function(teacherId) {
+  $scope.loginUser =  window.localStorage.getItem('login_type');
+  $scope.getParentsList = function(teacherId, login_type) {
     $rootScope.$broadcast('loading:show');
-    TeacherService.parentListForTeacher(teacherId).then(
+    TeacherService.parentListForTeacher(teacherId, login_type).then(
       function(response) {
         $scope.parentsList = response.data.chat_members;
         $rootScope.$broadcast('loading:hide');
@@ -1361,7 +1415,7 @@ $scope.showProfile = function() {
     $state.go('app.message', {teacherId: teacherId, memberData: parent});
   };
 
-  $scope.getParentsList($scope.teacherId);
+  $scope.getParentsList($scope.teacherId, $scope.loginUser);
 
 }])
 

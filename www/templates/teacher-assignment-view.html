@@ -28,7 +28,8 @@
       </div>
       <p>&nbsp;</p>
 
-      <textarea rows="5" style="width: 100%" placeholder="Please give description about the assignment. So that parents will be notified about the homework" ng-model="seletedItem.message" required></textarea>
+      <textarea rows="5" style="width: 100%; padding: 10px;
+    border: 1px solid;" placeholder="Please give description about the assignment. So that parents will be notified about the homework" ng-model="seletedItem.message" required></textarea>
       <div>
         <button class="button button-block button-positive" ng-disabled="createAssignmentForm.$invalid" ng-click="createAssignment(seletedItem)"> Create Assignment </button>
       </div>

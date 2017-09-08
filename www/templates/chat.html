@@ -1,7 +1,7 @@
 <ion-view view-title="Chat">
   <ion-content class="padding">
     <div class="row" ng-if="teachersData.length > 0">
-      <h4>Please select a teacher to text</h4>
+      <span>Please select a teacher under the Subject</span>
     </div>
     <ion-list ng-if="teachersData.length > 0">
       <ion-item class="item-text-wrap item-icon-right" ng-repeat="subject in teachersData" ng-click="showDetails = !showDetails" >

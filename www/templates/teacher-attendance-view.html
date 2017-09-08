@@ -1,7 +1,7 @@
 <ion-view cache-view="false" view-title="Attendance">
   <ion-content class="padding">
     <div style="text-align: center;">
-      <h3 style="opacity: 0.5">Take Attendance</h3>
+      <p style="opacity: 0.5">Date: {{date | date:'dd-MM-yyyy'}} </p>
     </div>
 
     <hr />
@@ -29,7 +29,7 @@
         </label>
       </div>
       <div>
-        <button class="button button-block button-positive" ng-disabled="selectClassform.$invalid" ng-click="fetchChildren(seletedClass)"> Get Children </button>
+        <button class="button button-block button-positive" ng-disabled="selectClassform.$invalid" ng-click="fetchChildren(seletedClass)"> Get Students </button>
       </div>
     </form>
     <div ng-show="showForms.studentsDisplayForm">
@@ -38,17 +38,18 @@
       </div>
     </div>
     <form name="childrenform" ng-show="showForms.studentsDisplayForm">
+      <p style="opacity: 0.5">{{seletedClass.value.class_name}} - {{seletedClass.value.section}} : {{seletedClass.session}} session</p>
       <div class="row header">
         <div class="col col-15 col-table">R.No</div>
         <div class="col col-40 col-table">Name</div>
-        <div class="col col-14 col-table">Pre</div>
+        <div class="col col-14 col-table">Pres</div>
         <div class="col col-14 col-table">Abss</div>
         <div class="col col-14 col-table" style="border-right: solid 1px grey;">Late</div>
       </div>
       <div class="row" ng-repeat="student in students">
-        <div class="col col-15 col-table">{{student.student_roll_num}}</div>
+        <div class="col col-15 col-table">{{$index+1}}</div>
         <div class="col col-40 col-table small-font-name-table">
-          {{student.student_first_name}} {{student.student_last_name.substring(0, 1)}}
+          {{student.student_first_name | uppercase}} {{student.student_last_name.substring(0, 1) | uppercase}}
         </div>
         <div class="col col-14 col-table">
           <input type="radio" name={{attendance[$index]}} value="P" ng-model="attendiesList['attendie'+($index+1)]"/>
